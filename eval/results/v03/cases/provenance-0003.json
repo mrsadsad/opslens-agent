@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "source": "local_fault_lab",
+  "case_id": "case-29eb33d90a074bef863815dd0a54a89b",
+  "scenario": "pool_exhaustion",
+  "seed": 41,
+  "group_id": "local-http-v1:pool_exhaustion",
+  "generated_at": "2026-10-01T12:37:04.343+00:00",
+  "python": "3.12.3",
+  "platform": "Windows",
+  "elapsed_seconds": 0.868,
+  "workload": {
+    "concurrency": 8,
+    "requests_per_phase": 24,
+    "client_timeout_seconds": 2.0,
+    "phases": [
+      "baseline",
+      "fault",
+      "recovery"
+    ]
+  },
+  "control_plane": {
+    "baseline": {
+      "pool_max": 8,
+      "acquire_timeout_s": 0.035,
+      "dependency_timeout_s": 0.25,
+      "response_delay_s": 0.06,
+      "dependency_path": "/work"
+    },
+    "intervention": {
+      "pool_max": 1,
+      "acquire_timeout_s": 0.035,
+      "dependency_timeout_s": 0.25,
+      "response_delay_s": 0.06,
+      "dependency_path": "/work"
+    }
+  },
+  "endpoints": {
+    "dependency": {
+      "host": "127.0.0.1",
+      "port": 53178
+    },
+    "checkout": {
+      "host": "127.0.0.1",
+      "port": 53180
+    }
+  },
+  "services": {
+    "checkout": "svc-ac0a5d8f79",
+    "dependency": "svc-a7adb501af"
+  },
+  "configuration_events": [
+    {
+      "timestamp": "2026-10-01T12:37:03.816+00:00",
+      "phase": "fault",
+      "service": "svc-ac0a5d8f79",
+      "event": "effective_configuration_change",
+      "differences": {
+        "pool_max": {
+          "before": 8,
+          "after": 1
+        }
+      }
+    },
+    {
+      "timestamp": "2026-10-01T12:37:04.086+00:00",
+      "phase": "recovery",
+      "service": "svc-ac0a5d8f79",
+      "event": "effective_configuration_change",
+      "differences": {
+        "pool_max": {
+          "before": 1,
+          "after": 8
+        }
+      }
+    }
+  ],
+  "measurements": {
+    "baseline": {
+      "load_client": {
+        "phase": "baseline",
+        "component": "load_client",
+        "requests": 24,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 64.863,
+        "latency_p95_ms": 67.953,
+        "status_counts": {
+          "200": 24
+        },
+        "error_counts": {}
+      },
+      "checkout": {
+        "phase": "baseline",
+        "component": "checkout",
+        "requests": 24,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 62.631,
+        "latency_p95_ms": 64.535,
+        "status_counts": {
+          "200": 24
+        },
+        "error_counts": {},
+        "acquire_wait_p95_ms": 0.004,
+        "outbound_latency_p95_ms": 63.641,
+        "pool_max": 8,
+        "pool_in_use": 0,
+        "pool_waiters": 0,
+        "pool_peak_in_use": 8,
+        "pool_peak_waiters": 1
+      },
+      "dependency": {
+        "phase": "baseline",
+        "component": "dependency",
+        "requests": 24,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 60.663,
+        "latency_p95_ms": 61.489,
+        "status_counts": {
+          "200": 24
+        },
+        "error_counts": {}
+      }
+    },
+    "fault": {
+      "load_client": {
+        "phase": "fault",
+        "component": "load_client",
+        "requests": 24,
+        "errors": 20,
+        "error_rate": 0.833333,
+        "latency_p50_ms": 60.899,
+        "latency_p95_ms": 124.726,
+        "status_counts": {
+          "200": 4,
+          "503": 20
+        },
+        "error_counts": {
+          "pool_acquire_timeout": 20
+        }
+      },
+      "checkout": {
+        "phase": "fault",
+        "component": "checkout",
+        "requests": 24,
+        "errors": 20,
+        "error_rate": 0.833333,
+        "latency_p50_ms": 56.191,
+        "latency_p95_ms": 100.95,
+        "status_counts": {
+          "200": 4,
+          "503": 20
+        },
+        "error_counts": {
+          "pool_acquire_timeout": 20
+        },
+        "acquire_wait_p95_ms": 58.103,
+        "outbound_latency_p95_ms": 78.594,
+        "pool_max": 1,
+        "pool_in_use": 0,
+        "pool_waiters": 0,
+        "pool_peak_in_use": 1,
+        "pool_peak_waiters": 7
+      },
+      "dependency": {
+        "phase": "fault",
+        "component": "dependency",
+        "requests": 4,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 60.563,
+        "latency_p95_ms": 61.164,
+        "status_counts": {
+          "200": 4
+        },
+        "error_counts": {}
+      }
+    },
+    "recovery": {
+      "load_client": {
+        "phase": "recovery",
+        "component": "load_client",
+        "requests": 24,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 67.167,
+        "latency_p95_ms": 90.925,
+        "status_counts": {
+          "200": 24
+        },
+        "error_counts": {}
+      },
+      "checkout": {
+        "phase": "recovery",
+        "component": "checkout",
+        "requests": 24,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 63.233,
+        "latency_p95_ms": 76.558,
+        "status_counts": {
+          "200": 24
+        },
+        "error_counts": {},
+        "acquire_wait_p95_ms": 0.009,
+        "outbound_latency_p95_ms": 76.071,
+        "pool_max": 8,
+        "pool_in_use": 0,
+        "pool_waiters": 0,
+        "pool_peak_in_use": 8,
+        "pool_peak_waiters": 1
+      },
+      "dependency": {
+        "phase": "recovery",
+        "component": "dependency",
+        "requests": 24,
+        "errors": 0,
+        "error_rate": 0.0,
+        "latency_p50_ms": 60.603,
+        "latency_p95_ms": 62.499,
+        "status_counts": {
+          "200": 24
+        },
+        "error_counts": {}
+      }
+    }
+  },
+  "validation": {
+    "passed": true,
+    "failures": []
+  },
+  "servers_closed": true,
+  "artifacts": {
+    "snapshot": "snapshot.json",
+    "requests": "requests.jsonl",
+    "label": "label.json"
+  },
+  "sha256": {
+    "snapshot": "28397744284d3101c6e711d6c071ff602f6dcaec4deded959137f113a69fe164",
+    "requests": "ca938bdfd533a9fd053727a1ac3f357f9ddb9e18a1bfa6ef6a3313a236f59132"
+  },
+  "limitations": [
+    "Controlled local HTTP experiment, not production traffic or a model benchmark.",
+    "Seed reproduces service aliases and configuration; scheduling, ports, identifiers and timings vary.",
+    "Different seeds of one fault family do not establish generalization to unseen fault families."
+  ]
+}

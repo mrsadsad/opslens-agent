@@ -1,0 +1,236 @@
+{
+  "run_id": "bfbaf6e2c29745c7b3a79fb3447df3a6",
+  "case_id": "sc_c9e0ef9527c9",
+  "case_fingerprint": "93942a4207aeee549211f221067a2289e3cc83b99dae746af8e239befbc32b9f",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "definition_hash": "a8559cc34180a493c0b8d00fdcc1090e921a95aa28bb7fc7803c2659117ba2dc",
+  "policy": "react",
+  "source": "synthetic",
+  "status": "completed",
+  "steps": 6,
+  "tool_calls": 18,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "observed": {
+    "sc_c9e0ef9527c9-service-1": {
+      "id": "sc_c9e0ef9527c9-service-1",
+      "kind": "service",
+      "service": "edge-gateway",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: edge-gateway. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_c9e0ef9527c9-service-2": {
+      "id": "sc_c9e0ef9527c9-service-2",
+      "kind": "service",
+      "service": "quote-worker",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: quote-worker. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_c9e0ef9527c9-service-3": {
+      "id": "sc_c9e0ef9527c9-service-3",
+      "kind": "service",
+      "service": "catalog-index",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: catalog-index. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_c9e0ef9527c9-service-4": {
+      "id": "sc_c9e0ef9527c9-service-4",
+      "kind": "service",
+      "service": "session-cache",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: session-cache. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "metric"
+        ],
+        "phases_by_kind": {
+          "metric": []
+        },
+        "unphased_kinds": [
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "ev_7ba6f5c2fe88": {
+      "id": "ev_7ba6f5c2fe88",
+      "kind": "metric",
+      "service": "edge-gateway",
+      "content": "One-minute buckets: 08:59 /estimate 504=0.0%, p95=82 ms; 09:01 504=9.2%, p95=1515 ms; 09:05 504=9.5%, p95=1518 ms. Request rate remains 96/s. Calls to quote-worker: deadline=1500 ms, timeouts=9.6%; client connections busy=18/max=80, acquisition p95=2 ms, waiting=0. Calls to session-cache p95=3 ms, errors=0.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_e122a3848b32": {
+      "id": "ev_e122a3848b32",
+      "kind": "metric",
+      "service": "session-cache",
+      "content": "09:00-09:10 operation p95=2 ms, error_count=0, evictions=0, connections=21/max=1000; same values in previous 10-minute window. Scrape coverage=100%.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_9f6bcddeae7b": {
+      "id": "ev_9f6bcddeae7b",
+      "kind": "metric",
+      "service": "catalog-index",
+      "content": "09:01-09:10 outbound GetQuote timeout_rate=9.4%, versus 0.0% before 09:01. Local index search p95=5 ms, CPU=24%, inbound request rate=49/s; baseline values were 5 ms, 24%, and 48/s.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_bcb0f5c74a6f": {
+      "id": "ev_bcb0f5c74a6f",
+      "kind": "metric",
+      "service": "quote-worker",
+      "content": "Window 09:01-09:10: accepted=145/s, completed=145/s, queue_wait_p95_ms=2260, handler_cpu_p95_ms=46, pending_work=318. Window 08:50-09:00: accepted=144/s, completed=144/s, queue_wait_p95_ms=4, pending_work=2. Successful database lookups p95=6 ms; connection waiters=0. Worker host scheduling samples are absent.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_442744b995d5": {
+      "id": "ev_442744b995d5",
+      "kind": "change",
+      "service": "edge-gateway",
+      "content": "gateway-73 rollout began 09:04:00 and ended 09:06:00. Artifact diff contains response footer text and static icon assets. Effective RPC endpoint, request deadline, retry count, routing table and client pool hashes are identical to gateway-72. Deployment inventory coverage is 08:30-09:10.",
+      "timestamp": "2026-10-01T09:06:00Z"
+    },
+    "ev_009179f588dc": {
+      "id": "ev_009179f588dc",
+      "kind": "change",
+      "service": "quote-worker",
+      "content": "Application image and runtime configuration checksum unchanged during 08:30-09:10. No host scheduler history or infrastructure-event inventory was captured for this interval.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_31637eed0f66": {
+      "id": "ev_31637eed0f66",
+      "kind": "log",
+      "service": "quote-worker",
+      "content": "request_id=7a31 rpc=GetQuote peer=edge-gateway enqueued_at=09:01:22.890Z started_at=09:01:25.143Z completed_at=09:01:25.191Z; response_write=caller_closed; query_time_ms=5.",
+      "timestamp": "2026-10-01T09:01:25Z",
+      "trace_id": "tr_b6329ae1"
+    },
+    "ev_3eab72fe3077": {
+      "id": "ev_3eab72fe3077",
+      "kind": "log",
+      "service": "edge-gateway",
+      "content": "request_id=7a31 build=gateway-72 route=/estimate peer=quote-worker rpc=GetQuote elapsed_ms=1501 result=DEADLINE_EXCEEDED http_status=504; local_connect_wait_ms=1; session_lookup_ms=3.",
+      "timestamp": "2026-10-01T09:01:24Z",
+      "trace_id": "tr_b6329ae1"
+    }
+  },
+  "report": {
+    "status": "diagnosed",
+    "cause_code": "dependency_timeout",
+    "root_cause": "quote-worker 的 GetQuote 处理队列排队延迟激增（queue_wait_p95 由 4 ms 升至 2260 ms，pending_work 由 2 升至 318），单请求处理耗时超过 edge-gateway 的 1500 ms 调用 deadline，导致上游 504。",
+    "root_service": "quote-worker",
+    "evidence_ids": [
+      "ev_bcb0f5c74a6f",
+      "ev_7ba6f5c2fe88",
+      "ev_31637eed0f66",
+      "ev_3eab72fe3077",
+      "ev_9f6bcddeae7b",
+      "ev_e122a3848b32",
+      "ev_442744b995d5",
+      "ev_009179f588dc"
+    ],
+    "explanation": "观测事实：① edge-gateway /estimate 在 09:01 起 504=9.2%→9.5%、p95≈1518 ms；对 quote-worker 的调用 deadline=1500 ms、timeouts=9.6%（ev_7ba6f5c2fe88，与用户给的 9.6%/1518 ms 同窗口一致）。② 调用方自身健康：客户端连接 busy=18/80、acquisition p95=2 ms、waiting=0；session-cache 调用 p95=3 ms、错误 0（ev_7ba6f5c2fe88、ev_e122a3848b32）。③ quote-worker 09:01-09:10 与 08:50-09:00 对比：accepted/completed 均 145/s 无变化，但 queue_wait_p95 4 ms→2260 ms、pending_work 2→318，handler_cpu_p95 仅 46 ms，数据库查询 p95=6 ms、connection waiters=0（ev_bcb0f5c74a6f）。④ 单条 trace tr_b6329ae1 将因果串起来：09:01:22.890 入队 → 09:01:25.143 才开始执行（排队约 2253 ms），实际查询仅 5 ms，而调用方 1501 ms 即 DEADLINE_EXCEEDED 返回 504（ev_31637eed0f66、ev_3eab72fe3077）。⑤ catalog-index outbound GetQuote timeout_rate 09:01 起 0.0%→9.4%，其自身 p95=5 ms、CPU=24%、流量不变，说明它是与 edge-gateway 同样的下游受害者，而非源头（ev_9f6bcddeae7b）。⑥ edge-gateway gateway-73 于 09:04-09:06 发布，但产物差异仅为页脚文本与静态图标，RPC endpoint、deadline、retry、路由表、客户端池哈希与 gateway-72 完全一致，且故障 09:01 已出现、504 日志仍记录 build=gateway-72，排除本次发布为诱因（ev_442744b995d5、ev_3eab72fe3077）；quote-worker 镜像与运行时配置校验和在窗口内未变化（ev_009179f588dc）。\\n\\n推断（机制）：quote-worker 内部排队/调度瓶颈使请求在队列中滞留约 2.2 s，超过上游 1500 ms deadline，上游按超时返回 504；判定为 dependency_timeout，根服 quote-worker。因 handler_cpu_p95 低、DB 等待为 0，倾向执行槽位/并发调度受限而非 CPU 或数据库瓶颈。\\n\\n未解范围：本快照无 quote-worker 主机调度样本、无主机/基础设施事件清单（ev_bcb0f5c74a6f、ev_009179f588dc 明确缺失），无法确认排队激增是上游流量、部署还是宿主资源所致；accepted 速率 145/s 与 08:50 窗口 144/s 基本持平（相差约 0.7%），也未见流量突增证据，故排队根因仍需现场核实。",
+    "next_steps": [
+      "检查 quote-worker 执行槽位/并发上限与队列深度（pending_work、queue_wait）在 09:00-09:10 的变化，确认是否为槽位耗尽导致排队",
+      "补齐 quote-worker 宿主调度器/CPU throttling（cgroup throttled_time、loadavg）与基础设施事件清单，本快照这两项缺失",
+      "核对 09:00 前后是否存在上游调用方（edge-gateway、catalog-index）重试放量造成有效并发升高（当前 accepted 速率 145/s vs 144/s 无明显变化，需更细粒度数据）",
+      "评估 edge-gateway 对 GetQuote 的 1500 ms deadline 是否合理，并在确认根因后考虑扩容/隔离 quote-worker 请求队列",
+      "将 catalog-index 的 GetQuote timeout_rate 纳入同一时间窗口持续观测，验证其与 quote-worker 排队同步升降"
+    ]
+  },
+  "report_audit": {
+    "version": "1.0.0",
+    "issues": [],
+    "requires_review": false
+  },
+  "usage": {
+    "prompt_tokens": 21591,
+    "completion_tokens": 2026,
+    "total_tokens": 23617
+  },
+  "usage_complete": true,
+  "model_seconds": 10.424486200034153,
+  "pending_model_request": false,
+  "hypotheses": {},
+  "tool_seconds": 0.015488600125536323,
+  "transport_attempts": 6,
+  "transport_attempts_complete": true,
+  "revision": 13,
+  "group_id": "challenge-v1:e2a978804ebb",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00019",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 6,
+  "scripted_demo": false,
+  "wall_seconds": 10.85986860000412,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 5761,
+    "delivered_records": 15,
+    "unique_records": 12,
+    "retrieval_calls": 17,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

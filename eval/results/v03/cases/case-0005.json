@@ -1,0 +1,87 @@
+{
+  "synthetic": true,
+  "source": "independent_synthetic_challenge_v1",
+  "case_id": "sc_c9e0ef9527c9",
+  "alert": "[SYNTHETIC] Frozen window 2026-10-01 09:00-09:10 UTC: /estimate at edge-gateway has 9.6% HTTP 504 and p95=1518 ms. Investigate the serving path using captured observations.",
+  "services": [
+    "edge-gateway",
+    "quote-worker",
+    "catalog-index",
+    "session-cache"
+  ],
+  "records": [
+    {
+      "id": "ev_31637eed0f66",
+      "kind": "log",
+      "service": "quote-worker",
+      "timestamp": "2026-10-01T09:01:25Z",
+      "content": "request_id=7a31 rpc=GetQuote peer=edge-gateway enqueued_at=09:01:22.890Z started_at=09:01:25.143Z completed_at=09:01:25.191Z; response_write=caller_closed; query_time_ms=5.",
+      "trace_id": "tr_b6329ae1"
+    },
+    {
+      "id": "ev_442744b995d5",
+      "kind": "change",
+      "service": "edge-gateway",
+      "timestamp": "2026-10-01T09:06:00Z",
+      "content": "gateway-73 rollout began 09:04:00 and ended 09:06:00. Artifact diff contains response footer text and static icon assets. Effective RPC endpoint, request deadline, retry count, routing table and client pool hashes are identical to gateway-72. Deployment inventory coverage is 08:30-09:10."
+    },
+    {
+      "id": "ev_3eab72fe3077",
+      "kind": "log",
+      "service": "edge-gateway",
+      "timestamp": "2026-10-01T09:01:24Z",
+      "content": "request_id=7a31 build=gateway-72 route=/estimate peer=quote-worker rpc=GetQuote elapsed_ms=1501 result=DEADLINE_EXCEEDED http_status=504; local_connect_wait_ms=1; session_lookup_ms=3.",
+      "trace_id": "tr_b6329ae1"
+    },
+    {
+      "id": "ev_e122a3848b32",
+      "kind": "metric",
+      "service": "session-cache",
+      "timestamp": "2026-10-01T09:10:00Z",
+      "content": "09:00-09:10 operation p95=2 ms, error_count=0, evictions=0, connections=21/max=1000; same values in previous 10-minute window. Scrape coverage=100%."
+    },
+    {
+      "id": "ev_9f6bcddeae7b",
+      "kind": "metric",
+      "service": "catalog-index",
+      "timestamp": "2026-10-01T09:10:00Z",
+      "content": "09:01-09:10 outbound GetQuote timeout_rate=9.4%, versus 0.0% before 09:01. Local index search p95=5 ms, CPU=24%, inbound request rate=49/s; baseline values were 5 ms, 24%, and 48/s."
+    },
+    {
+      "id": "ev_2ae6936aac64",
+      "kind": "runbook",
+      "service": "edge-gateway",
+      "timestamp": "2026-10-01T09:10:00Z",
+      "content": "For a deadline event, compare caller and server timestamps by trace ID. Separate time spent waiting for an execution slot from handler execution and connection acquisition. A deployment timestamp is a candidate explanation, not evidence that it affected the failing path. Propose only checks supported by this snapshot."
+    },
+    {
+      "id": "ev_7ba6f5c2fe88",
+      "kind": "metric",
+      "service": "edge-gateway",
+      "timestamp": "2026-10-01T09:10:00Z",
+      "content": "One-minute buckets: 08:59 /estimate 504=0.0%, p95=82 ms; 09:01 504=9.2%, p95=1515 ms; 09:05 504=9.5%, p95=1518 ms. Request rate remains 96/s. Calls to quote-worker: deadline=1500 ms, timeouts=9.6%; client connections busy=18/max=80, acquisition p95=2 ms, waiting=0. Calls to session-cache p95=3 ms, errors=0."
+    },
+    {
+      "id": "ev_bcb0f5c74a6f",
+      "kind": "metric",
+      "service": "quote-worker",
+      "timestamp": "2026-10-01T09:10:00Z",
+      "content": "Window 09:01-09:10: accepted=145/s, completed=145/s, queue_wait_p95_ms=2260, handler_cpu_p95_ms=46, pending_work=318. Window 08:50-09:00: accepted=144/s, completed=144/s, queue_wait_p95_ms=4, pending_work=2. Successful database lookups p95=6 ms; connection waiters=0. Worker host scheduling samples are absent."
+    },
+    {
+      "id": "ev_009179f588dc",
+      "kind": "change",
+      "service": "quote-worker",
+      "timestamp": "2026-10-01T09:10:00Z",
+      "content": "Application image and runtime configuration checksum unchanged during 08:30-09:10. No host scheduler history or infrastructure-event inventory was captured for this interval."
+    },
+    {
+      "id": "ev_78ba78138bf2",
+      "kind": "log",
+      "service": "catalog-index",
+      "timestamp": "2026-10-01T09:01:27Z",
+      "content": "request_id=9bf4 build=catalog-16 unchanged_since=2026-09-29 route=/preview peer=quote-worker rpc=GetQuote elapsed_ms=1500 result=DEADLINE_EXCEEDED; inbound index lookup elapsed_ms=4. This caller uses no edge-gateway process or deployment.",
+      "trace_id": "tr_129e8c6b"
+    }
+  ]
+}

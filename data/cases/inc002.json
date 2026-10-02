@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "case_id": "inc002",
+  "alert": "[SYNTHETIC] 2026-09-21 11:10 UTC: checkout HTTP 5xx increased to 12% and p95 latency to 3100 ms. Diagnose from this frozen snapshot only.",
+  "services": ["checkout", "inventory", "orders-db"],
+  "records": [
+    {"id": "inc002-m1", "kind": "metric", "service": "checkout", "timestamp": "2026-09-21T11:10:00Z", "content": "Window 11:07–11:10 UTC: outbound inventory RPC p95_ms=3050 (baseline 45), timeout_rate=12%. orders-db pool in_use=27/max=100, pool_waiters=0, acquisition_p95_ms=3. Request rate steady at 210/s."},
+    {"id": "inc002-m2", "kind": "metric", "service": "inventory", "timestamp": "2026-09-21T11:10:00Z", "content": "Inventory request_duration_p95_ms=4200 (baseline 38); work_queue_depth=480 (baseline 3); timeout symptoms begin at 11:07 UTC. This snapshot does not establish why inventory slowed."},
+    {"id": "inc002-m3", "kind": "metric", "service": "orders-db", "timestamp": "2026-09-21T11:10:00Z", "content": "Database CPU=20%, query_p95_ms=7, locks_waiting=0; all within the previous-hour baseline."},
+    {"id": "inc002-l1", "kind": "log", "service": "checkout", "timestamp": "2026-09-21T11:09:10Z", "content": "ERROR trace=sample-002 POST /checkout: inventory.ReserveStock deadline exceeded after 3000 ms; no database acquisition timeout; response mapped to HTTP 504."},
+    {"id": "inc002-l2", "kind": "log", "service": "inventory", "timestamp": "2026-09-21T11:09:10Z", "content": "WARN trace=sample-002 ReserveStock waited 3890 ms in work queue; caller deadline already elapsed before handler completed."},
+    {"id": "inc002-c1", "kind": "change", "service": "checkout", "timestamp": "2026-09-21T11:10:00Z", "content": "Change inventory covers the last 24 hours: no checkout deployment or runtime configuration change recorded. inventory RPC deadline remains 3000 ms."},
+    {"id": "inc002-c2", "kind": "change", "service": "inventory", "timestamp": "2026-09-21T11:10:00Z", "content": "No inventory deployment recorded in the last 24 hours; scaling and host-event history unavailable in this snapshot."},
+    {"id": "inc002-r1", "kind": "runbook", "service": "checkout", "content": "Dependency timeout triage: identify the RPC and deadline in caller logs, compare downstream latency and queue metrics, and check caller connection-pool health. Separate the failing dependency from the unproven deeper cause of its slowdown. Propose owner escalation or reviewed traffic reduction; do not blindly increase timeouts."},
+    {"id": "inc002-r2", "kind": "runbook", "service": "checkout", "content": "Incident triage: corroborate caller errors with dependency observations and look for counterevidence before assigning a cause. A recent deployment is a hypothesis, not proof."}
+  ]
+}

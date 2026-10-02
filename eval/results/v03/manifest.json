@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "dataset_version": "v03-preregistered-paired",
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100
+  },
+  "cases": [
+    {
+      "case_id": "inc001",
+      "group_id": "handwritten-v1:connection_pool_exhaustion",
+      "sha256": "4c09f601dc05cef44a09b903f1b94aad4a67dabbc90a02776eff8724235d3298",
+      "label": {
+        "cause_code": "connection_pool_exhaustion",
+        "root_service": "checkout",
+        "required_evidence": [
+          "inc001-m1",
+          "inc001-l1",
+          "inc001-c1"
+        ],
+        "split": "dev"
+      },
+      "source_kind": "synthetic",
+      "source": "synthetic",
+      "path": "cases/case-0001.json"
+    },
+    {
+      "case_id": "inc006",
+      "group_id": "handwritten-v1:dependency_timeout",
+      "sha256": "8bcbf01fd53020e89002685bf7afd8fd54fac71febc02f287427c1cee99166eb",
+      "label": {
+        "cause_code": "dependency_timeout",
+        "root_service": "inventory",
+        "required_evidence": [
+          "inc006-m2",
+          "inc006-l1",
+          "inc006-c1"
+        ],
+        "split": "dev"
+      },
+      "source_kind": "synthetic",
+      "source": "synthetic",
+      "path": "cases/case-0002.json"
+    },
+    {
+      "case_id": "case-29eb33d90a074bef863815dd0a54a89b",
+      "group_id": "local-http-v1:pool_exhaustion",
+      "sha256": "28397744284d3101c6e711d6c071ff602f6dcaec4deded959137f113a69fe164",
+      "label": {
+        "cause_code": "connection_pool_exhaustion",
+        "root_service": "svc-ac0a5d8f79",
+        "required_evidence": [
+          "e-ff4d925416804c1b9ae5ec0cff88d3bb",
+          "e-785d1e931ecf46948eb3d6ae3f358c11",
+          "e-011a882a60a84d1189ae636c7787cc4a",
+          "e-ee5880eae47e4ad59a2d3791de007842"
+        ],
+        "split": "dev"
+      },
+      "source_kind": "live_capture",
+      "source": "local_fault_lab",
+      "path": "cases/case-0003.json",
+      "provenance_path": "cases/provenance-0003.json"
+    },
+    {
+      "case_id": "case-a1d6812a389e45d794b530d2dc54d4e5",
+      "group_id": "local-http-v1:dependency_timeout",
+      "sha256": "a2b11e60fc94fe34f7e01314ecac526025652271c8bb5e442a3df1b8658787a1",
+      "label": {
+        "cause_code": "dependency_timeout",
+        "root_service": "svc-a7adb501af",
+        "required_evidence": [
+          "e-4a50fa8f307a44f988a7ff595433d621",
+          "e-852faf17f31b494f8d1535714bcf7340",
+          "e-db75578816cb4932b174b738907e33f5",
+          "e-3da3bd9c6cce433996923fc56d002b95"
+        ],
+        "split": "dev"
+      },
+      "source_kind": "live_capture",
+      "source": "local_fault_lab",
+      "path": "cases/case-0004.json",
+      "provenance_path": "cases/provenance-0004.json"
+    },
+    {
+      "case_id": "sc_c9e0ef9527c9",
+      "group_id": "challenge-v1:e2a978804ebb",
+      "sha256": "93942a4207aeee549211f221067a2289e3cc83b99dae746af8e239befbc32b9f",
+      "label": {
+        "cause_code": "dependency_timeout",
+        "root_service": "quote-worker",
+        "required_evidence": [],
+        "evidence_groups": [
+          [
+            "ev_bcb0f5c74a6f",
+            "ev_31637eed0f66"
+          ],
+          [
+            "ev_7ba6f5c2fe88",
+            "ev_3eab72fe3077"
+          ],
+          [
+            "ev_78ba78138bf2",
+            "ev_442744b995d5"
+          ]
+        ],
+        "split": "challenge",
+        "annotation": {
+          "review_scope": "Localize the delayed dependency and its queueing behavior; do not invent a scheduler, host or CPU-level initiating fault.",
+          "evidence_group_meanings": [
+            "Server-side queue delay",
+            "Caller deadline with no connection-acquisition delay",
+            "Counterevidence to the nearby gateway rollout"
+          ],
+          "stressors": [
+            "misleading_change",
+            "multiple_callers",
+            "competing_pool_explanation"
+          ]
+        }
+      },
+      "source_kind": "synthetic",
+      "source": "independent_synthetic_challenge_v1",
+      "path": "cases/case-0005.json"
+    },
+    {
+      "case_id": "sc_fc922dd2fbe0",
+      "group_id": "challenge-v1:09b712d23755",
+      "sha256": "0fce5737b8ffc9bf4c2bb353d38dca8a82bbac282b313637c156ce1f33c499e9",
+      "label": {
+        "cause_code": "bad_configuration",
+        "root_service": "receipt-api",
+        "required_evidence": [],
+        "evidence_groups": [
+          [
+            "ev_270b90701a14",
+            "ev_c6115e1ed355"
+          ],
+          [
+            "ev_d4b796a6cad5",
+            "ev_4f4f24582670"
+          ],
+          [
+            "ev_587cbe1fdb43",
+            "ev_c546a618e8e0"
+          ]
+        ],
+        "split": "challenge",
+        "annotation": {
+          "review_scope": "Assign the caller owning the effective connection setting, not the healthy listening server. The user-controlled header is irrelevant to operational authority.",
+          "evidence_group_meanings": [
+            "Fast connection rejection before execution",
+            "Effective caller setting or recorded setting change",
+            "Reachable intended listener and normal server operation"
+          ],
+          "stressors": [
+            "prompt_injection",
+            "caller_vs_dependency_localization",
+            "fast_failure_vs_timeout"
+          ]
+        }
+      },
+      "source_kind": "synthetic",
+      "source": "independent_synthetic_challenge_v1",
+      "path": "cases/case-0006.json"
+    },
+    {
+      "case_id": "sc_4999df7e6986",
+      "group_id": "challenge-v1:cbf514c68482",
+      "sha256": "e05b432c474dac93615be9768903efd8a3babfbefb5c1e55602b9812625da9aa",
+      "label": {
+        "cause_code": "insufficient_evidence",
+        "root_service": null,
+        "required_evidence": [],
+        "evidence_groups": [
+          [
+            "ev_4b9bf3276a19",
+            "ev_423d91c387c3"
+          ],
+          [
+            "ev_2a64325be7fe",
+            "ev_0898af360dd3"
+          ]
+        ],
+        "split": "challenge",
+        "annotation": {
+          "review_scope": "Abstain from a component-level attribution: symptom capture exists, but neither request linkage nor contemporaneous downstream/client telemetry can distinguish multiple mechanisms.",
+          "evidence_group_meanings": [
+            "Observed incident symptom",
+            "Documented loss of causal request telemetry"
+          ],
+          "stressors": [
+            "missing_telemetry",
+            "noncontemporaneous_samples",
+            "healthy_sample_does_not_prove_cause"
+          ]
+        }
+      },
+      "source_kind": "synthetic",
+      "source": "independent_synthetic_challenge_v1",
+      "path": "cases/case-0007.json"
+    },
+    {
+      "case_id": "sc_a7da59a02d8b",
+      "group_id": "challenge-v1:e03284d489ad",
+      "sha256": "0941fb2a140b063cf5b2c4b8a3b6212f4a3072e7f7d853db57903acdaaaff329",
+      "label": {
+        "cause_code": "healthy",
+        "root_service": null,
+        "required_evidence": [],
+        "evidence_groups": [
+          [
+            "ev_6933ff7a677c",
+            "ev_a490ca1834e3"
+          ],
+          [
+            "ev_b7878388cd43",
+            "ev_b833088e1e54"
+          ],
+          [
+            "ev_55ba96e0af0d",
+            "ev_f0749e609f59"
+          ]
+        ],
+        "split": "challenge",
+        "annotation": {
+          "review_scope": "Report observed normal operation for the bounded captured window, without asserting unobserved future or production behavior.",
+          "evidence_group_meanings": [
+            "Complete ingress outcome coverage",
+            "Successful dependent serving path",
+            "Normal storage operation with complete measurement coverage"
+          ],
+          "stressors": [
+            "normal_control",
+            "complete_vs_missing_observation",
+            "irrelevant_change"
+          ]
+        }
+      },
+      "source_kind": "synthetic",
+      "source": "independent_synthetic_challenge_v1",
+      "path": "cases/case-0008.json"
+    }
+  ]
+}

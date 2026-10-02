@@ -1,0 +1,7 @@
+# Keep source checkouts consistent across operating systems.
+* text=auto eol=lf
+
+# Experiment manifests and frozen evidence use byte-exact SHA-256 hashes.
+# Preserve original bytes, including line endings, when adding or checking out.
+data/** -text whitespace=cr-at-eol
+eval/** -text whitespace=cr-at-eol

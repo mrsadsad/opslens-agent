@@ -1,0 +1,84 @@
+{
+  "synthetic": true,
+  "source": "independent_synthetic_challenge_v1",
+  "case_id": "sc_4999df7e6986",
+  "alert": "[SYNTHETIC] Frozen window 2026-10-01 11:20-11:30 UTC: front-door reports 7% HTTP 500 for /submit during 11:24-11:26. Determine which conclusions the available snapshot can support.",
+  "services": [
+    "front-door",
+    "invoice-api",
+    "account-api",
+    "event-store"
+  ],
+  "records": [
+    {
+      "id": "ev_8753dba7df6f",
+      "kind": "change",
+      "service": "front-door",
+      "timestamp": "2026-10-01T11:30:00Z",
+      "content": "Last reliable configuration inventory was captured at 11:00. Delta synchronization failed at 11:21; runtime readback and application revision membership for 11:24-11:26 were not retained."
+    },
+    {
+      "id": "ev_d1228be67124",
+      "kind": "metric",
+      "service": "account-api",
+      "timestamp": "2026-10-01T11:29:00Z",
+      "content": "Captured scrape at 11:29:00: request p95=36 ms, error_rate=0.0%, work_queue=1. The collector has no account-api samples for 11:20-11:28 and no historical log export."
+    },
+    {
+      "id": "ev_411e5716b0cd",
+      "kind": "runbook",
+      "service": "front-door",
+      "timestamp": "2026-10-01T11:30:00Z",
+      "content": "Preserve timestamp coverage when comparing observations. A low-latency sample from before or after an event does not establish the state during the event. Request a route-to-dependency trace, an exception sample, current client connection metrics and effective configuration when those fields are absent."
+    },
+    {
+      "id": "ev_0898af360dd3",
+      "kind": "log",
+      "service": "invoice-api",
+      "timestamp": "2026-10-01T11:29:05Z",
+      "content": "collector_status: logs for interval 11:24-11:26 missing from local buffer; span cache empty; incoming request-to-caller association unavailable. This collector record does not report application request outcomes."
+    },
+    {
+      "id": "ev_423d91c387c3",
+      "kind": "log",
+      "service": "front-door",
+      "timestamp": "2026-10-01T11:24:36Z",
+      "content": "route=/submit http_status=500 exception_class=redacted detail=redacted trace_id=not_recorded upstream_name=not_recorded. Ring buffer retained 1 of 420 error events; this is the only surviving error event."
+    },
+    {
+      "id": "ev_304b4221da5d",
+      "kind": "change",
+      "service": "account-api",
+      "timestamp": "2026-10-01T11:30:00Z",
+      "content": "Inventory lists a revision at 10:15. Inventory service disconnected at 11:15; no later deployment or host-event records are available."
+    },
+    {
+      "id": "ev_096b30ea4a65",
+      "kind": "metric",
+      "service": "invoice-api",
+      "timestamp": "2026-10-01T11:23:00Z",
+      "content": "Last scrape=11:23:00: request p95=41 ms, error_rate=0.1%, process CPU=23%. No successful scrapes occurred between 11:24 and 11:29; missing samples were not filled with zero."
+    },
+    {
+      "id": "ev_2a64325be7fe",
+      "kind": "log",
+      "service": "front-door",
+      "timestamp": "2026-10-01T11:26:03Z",
+      "content": "telemetry exporter state: outbound span batches dropped from 11:23:52 through 11:26:01; lost_span_count=unknown. Error formatter omitted exception_class and upstream_name. Metrics route counts remained available."
+    },
+    {
+      "id": "ev_563b24dc82a1",
+      "kind": "metric",
+      "service": "event-store",
+      "timestamp": "2026-10-01T11:25:00Z",
+      "content": "11:25:00-11:26:00 server query p95=9 ms, CPU=22%, lock_waiters=0. Per-caller connection state and application client-side connection acquisition were not measured. Earlier and later one-minute store samples are absent."
+    },
+    {
+      "id": "ev_4b9bf3276a19",
+      "kind": "metric",
+      "service": "front-door",
+      "timestamp": "2026-10-01T11:30:00Z",
+      "content": "11:24-11:26 /submit status_500_count=420 of 6000 requests, CPU=26%, memory=380 MiB; 11:20-11:23 status_500_count=3 of 9000. The export has no upstream timing, connection-acquisition histogram or endpoint destination tags for the affected window."
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "a5bbd7f304de4ac49d4fafb66d1de22b",
+  "created_at": "2026-10-01T13:00:28.556798+00:00",
+  "opslens_version": "0.3.1",
+  "dataset_version": "v03-smoke",
+  "manifest_sha256": "c37974d0d16a5052be917fa4675aa5a7490bafece06eb436722e766a7176427c",
+  "source_hashes": {
+    "__init__.py": "5421b21c28360d4022abd77aa25986290883efdf7566d74672778673be6f788d",
+    "__main__.py": "9092b126ecbef1fbedd20237eab28bc52a4a910691c6d5360de4f548f5d53971",
+    "benchmark.py": "d29b5719842f4f07998424407bb4ea0754b9983f1ae38421bf53356b0a438d02",
+    "config.py": "af9c1a4b157f79b26ae29418b6156b28653e838394d0b8173e3dc23467369530",
+    "context.py": "4d87846425212ac182f4759699cc4b8169320022561dc846f6d81f629e52ad29",
+    "evaluation.py": "d7929c91ad916f643073a66305bedd103801ab52c7e0e4baeb984b71dfd87694",
+    "investigation.py": "d23698e81141c6096ca2ff58c1ed18d9994d63fcd9dc1799f7fca7bf6e73bfd8",
+    "lab.py": "3321dba2e34c52ac75a9dc9bece9c59f331fb40cae777b071420474051387595",
+    "mcp.py": "94f0477922c77c1ebb4c46483571cc450de11a6658886ce47b6f9924f4cede38",
+    "providers.py": "bcbf72fca555b3d409d1e2b2e2a176144d3daef4ad6f17b1f31779acfae8976e",
+    "report_audit.py": "b84d62ef05ee3fc0b42b19c0de959bd3ba83f0fde611c4d44801cb8b0f722b7c",
+    "retrieval.py": "0790b442b4f7edfad0bc0496d7a6ac4c7fdf8cc6d2dc078fca9056192dada596",
+    "runtime.py": "a51231ad29787469c55c3b967059ecb272231c59455a5f2f543abc0967c74068",
+    "server.py": "acd1205f23b6778c84154e2895536c068a9eb1ffe72002e0f29d364e7c3fa3d4",
+    "store.py": "f962b33665b533a0b948961e8faba40bed6fdd56a2b13bc83229d16e46ad6c1f",
+    "tools.py": "9305868417e5d45e30881ca05b4f1b0c5c9ba3b9bdfcdc29a4387eafd3d0ea71"
+  },
+  "policies": [
+    "single-shot",
+    "react",
+    "investigator"
+  ],
+  "policy_descriptions": {
+    "single-shot": "Broad deterministic collection over all discovered services, then one diagnosis call.",
+    "react": "Model chooses tools iteratively within the same source and observation limits.",
+    "investigator": "Iterative investigation with runtime hypothesis bookkeeping; structural checks are not semantic judging."
+  },
+  "repeats": 1,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_model_calls": 13,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100
+  },
+  "max_context_chars": 48000,
+  "max_total_tokens": 60000,
+  "order": "case/repeat order; policy order rotates by case index plus repeat index",
+  "provider_contract": "One model request per complete(); built-in HTTP retries disabled.",
+  "label_boundary": "Labels used for manifest validation/scoring only; policies receive tools, never labels.",
+  "n_cases": 1,
+  "n_attempts": 3,
+  "provider_names": [
+    "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096"
+  ],
+  "model_calls_used": 11,
+  "scripted_demo": false,
+  "experiment_complete": true,
+  "experiment_valid": true,
+  "invalid_reason": null,
+  "invalid_details": null,
+  "interpretation": "model_experiment_requires_review",
+  "warnings": [
+    "Synthetic fixtures and local fault captures are reported separately; neither represents production incident diversity."
+  ],
+  "metric_notes": {
+    "cause_match": "Exact cause_code equality; explanation semantics are not scored.",
+    "root_service_match": "Exact component equality when the label specifies root_service; None otherwise.",
+    "required_evidence_recall": "Fraction of label-required IDs both cited and observed; None if the label requires no IDs. Aggregate is a mean over cases with required IDs.",
+    "citation_traceability": "Fraction of distinct cited IDs present in observed; None for no citations. Aggregate is weighted by citation count. This is NOT semantic support accuracy.",
+    "abstention_correct": "For abstaining reports only: the label and reported cause both equal insufficient_evidence. None otherwise. Evidence coverage is checked separately by task_success, including on insufficient_evidence cases.",
+    "task_success": "Completed valid report, exact cause and (when labeled) root_service match, all required evidence cited and observed, and no unobserved citations. A diagnosis requires citations. Every evidence_groups group must have an observed citation, and no known numeric audit issue may remain. An empty-citation abstention can pass only if its label requires no evidence. This is not full semantic correctness.",
+    "numeric_audit": "Conservative rules for known numeric risks; zero findings does not certify all narrative claims.",
+    "numeric_rejection_count": "Rejected diagnosis or hypothesis submissions with numeric findings; includes repaired and ultimately failed runs.",
+    "evidence_groups_recall": "Fraction of evaluator-defined alternative-evidence groups with at least one observed citation; all groups are required.",
+    "usage": "Reported token totals; partial totals are marked usage_complete=false."
+  },
+  "strata": [
+    {
+      "source_kind": "synthetic",
+      "split": "dev",
+      "n_cases": 1,
+      "n_groups": 1,
+      "inference_block_reason": null,
+      "policies": {
+        "single-shot": {
+          "n": 1,
+          "n_attempted": 1,
+          "n_success": 0,
+          "n_structural_success": 0,
+          "n_numeric_audit_flagged": 1,
+          "numeric_rejection_count": 1,
+          "task_success_rate": 0.0,
+          "task_success_wilson_95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "inference_block_reason": null,
+          "cause_match_rate": 0.0,
+          "n_with_root_service_label": 1,
+          "root_service_match_rate": 0.0,
+          "wilson_independent_trial_layout": true,
+          "wilson_note": "Descriptive only when repeats or related cases share group_id; not independent trials.",
+          "failure_taxonomy": {
+            "report_audit_failed": 1
+          },
+          "model_calls": 1,
+          "latency_seconds": {
+            "n": 1,
+            "p50": 5.931807899993146,
+            "p95": 5.931807899993146,
+            "scope": "wall time of attempted runs, including failed runs; excludes unattempted rows"
+          },
+          "reported_tokens": {
+            "prompt_tokens": 2529,
+            "completion_tokens": 1112,
+            "total_tokens": 3641
+          },
+          "usage_complete": true,
+          "reported_tokens_mean_per_scheduled_run": 3641.0,
+          "currency_cost": null,
+          "cost_note": "Tokens only; no invented monetary cost. Missing usage produces partial, lower-bound totals.",
+          "mean_tool_calls": 11.0,
+          "retrieval_calls": 10,
+          "empty_retrieval_calls": 2,
+          "unsupported_phase_calls": 0,
+          "numeric_repair_requests": 1,
+          "mean_observation_chars": 3645.0,
+          "mean_observation_records": 11.0
+        },
+        "react": {
+          "n": 1,
+          "n_attempted": 1,
+          "n_success": 1,
+          "n_structural_success": 1,
+          "n_numeric_audit_flagged": 0,
+          "numeric_rejection_count": 0,
+          "task_success_rate": 1.0,
+          "task_success_wilson_95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "inference_block_reason": null,
+          "cause_match_rate": 1.0,
+          "n_with_root_service_label": 1,
+          "root_service_match_rate": 1.0,
+          "wilson_independent_trial_layout": true,
+          "wilson_note": "Descriptive only when repeats or related cases share group_id; not independent trials.",
+          "failure_taxonomy": {},
+          "model_calls": 4,
+          "latency_seconds": {
+            "n": 1,
+            "p50": 8.262128200003644,
+            "p95": 8.262128200003644,
+            "scope": "wall time of attempted runs, including failed runs; excludes unattempted rows"
+          },
+          "reported_tokens": {
+            "prompt_tokens": 11071,
+            "completion_tokens": 1408,
+            "total_tokens": 12479
+          },
+          "usage_complete": true,
+          "reported_tokens_mean_per_scheduled_run": 12479.0,
+          "currency_cost": null,
+          "cost_note": "Tokens only; no invented monetary cost. Missing usage produces partial, lower-bound totals.",
+          "mean_tool_calls": 10.0,
+          "retrieval_calls": 9,
+          "empty_retrieval_calls": 1,
+          "unsupported_phase_calls": 0,
+          "numeric_repair_requests": 0,
+          "mean_observation_chars": 3336.0,
+          "mean_observation_records": 10.0
+        },
+        "investigator": {
+          "n": 1,
+          "n_attempted": 1,
+          "n_success": 1,
+          "n_structural_success": 1,
+          "n_numeric_audit_flagged": 0,
+          "numeric_rejection_count": 0,
+          "task_success_rate": 1.0,
+          "task_success_wilson_95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "inference_block_reason": null,
+          "cause_match_rate": 1.0,
+          "n_with_root_service_label": 1,
+          "root_service_match_rate": 1.0,
+          "wilson_independent_trial_layout": true,
+          "wilson_note": "Descriptive only when repeats or related cases share group_id; not independent trials.",
+          "failure_taxonomy": {},
+          "model_calls": 6,
+          "latency_seconds": {
+            "n": 1,
+            "p50": 13.742815600009635,
+            "p95": 13.742815600009635,
+            "scope": "wall time of attempted runs, including failed runs; excludes unattempted rows"
+          },
+          "reported_tokens": {
+            "prompt_tokens": 24256,
+            "completion_tokens": 2371,
+            "total_tokens": 26627
+          },
+          "usage_complete": true,
+          "reported_tokens_mean_per_scheduled_run": 26627.0,
+          "currency_cost": null,
+          "cost_note": "Tokens only; no invented monetary cost. Missing usage produces partial, lower-bound totals.",
+          "mean_tool_calls": 14.0,
+          "retrieval_calls": 9,
+          "empty_retrieval_calls": 1,
+          "unsupported_phase_calls": 0,
+          "numeric_repair_requests": 0,
+          "mean_observation_chars": 3458.0,
+          "mean_observation_records": 10.0
+        }
+      },
+      "paired_comparisons": [
+        {
+          "difference": -1.0,
+          "ci_95": null,
+          "n_pairs": 1,
+          "n_groups": 1,
+          "bootstrap_samples": 2000,
+          "seed": 0,
+          "estimand": "mean of within-group paired success differences, equal group weights",
+          "method": "paired cluster percentile bootstrap over group_id",
+          "limitation": "No interval with fewer than two groups; a tiny group count gives weak inference.",
+          "policy_a": "single-shot",
+          "policy_b": "react",
+          "direction": "policy_a minus policy_b",
+          "budget_or_interrupt_censored": false,
+          "inference_valid": false,
+          "inference_block_reason": "insufficient_independent_groups"
+        },
+        {
+          "difference": -1.0,
+          "ci_95": null,
+          "n_pairs": 1,
+          "n_groups": 1,
+          "bootstrap_samples": 2000,
+          "seed": 0,
+          "estimand": "mean of within-group paired success differences, equal group weights",
+          "method": "paired cluster percentile bootstrap over group_id",
+          "limitation": "No interval with fewer than two groups; a tiny group count gives weak inference.",
+          "policy_a": "single-shot",
+          "policy_b": "investigator",
+          "direction": "policy_a minus policy_b",
+          "budget_or_interrupt_censored": false,
+          "inference_valid": false,
+          "inference_block_reason": "insufficient_independent_groups"
+        },
+        {
+          "difference": 0.0,
+          "ci_95": null,
+          "n_pairs": 1,
+          "n_groups": 1,
+          "bootstrap_samples": 2000,
+          "seed": 0,
+          "estimand": "mean of within-group paired success differences, equal group weights",
+          "method": "paired cluster percentile bootstrap over group_id",
+          "limitation": "No interval with fewer than two groups; a tiny group count gives weak inference.",
+          "policy_a": "react",
+          "policy_b": "investigator",
+          "direction": "policy_a minus policy_b",
+          "budget_or_interrupt_censored": false,
+          "inference_valid": false,
+          "inference_block_reason": "insufficient_independent_groups"
+        }
+      ]
+    }
+  ],
+  "output_dir": ".",
+  "export_note": "Portable projection; original experiment/manifest hashes retained. Revalidate copied snapshot hashes via manifest.json. No checkpoints or model message histories included."
+}

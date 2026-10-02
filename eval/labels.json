@@ -1,0 +1,8 @@
+{
+  "inc001": {"cause_code": "connection_pool_exhaustion", "root_service": "checkout", "required_evidence": ["inc001-m1", "inc001-l1", "inc001-c1"], "split": "dev"},
+  "inc002": {"cause_code": "dependency_timeout", "root_service": "inventory", "required_evidence": ["inc002-m1", "inc002-m2", "inc002-l1"], "split": "dev"},
+  "inc003": {"cause_code": "bad_configuration", "root_service": "checkout", "required_evidence": ["inc003-l1", "inc003-c1", "inc003-m2"], "split": "dev"},
+  "inc004": {"cause_code": "insufficient_evidence", "root_service": null, "required_evidence": ["inc004-m1", "inc004-l1"], "split": "dev"},
+  "inc005": {"cause_code": "connection_pool_exhaustion", "root_service": "checkout", "required_evidence": ["inc005-m1", "inc005-l1", "inc005-c1"], "split": "dev"},
+  "inc006": {"cause_code": "dependency_timeout", "root_service": "inventory", "required_evidence": ["inc006-m2", "inc006-l1", "inc006-c1"], "split": "dev"}
+}

@@ -1,0 +1,247 @@
+{
+  "run_id": "580cff936b1c4adda99374a183ece5f3",
+  "case_id": "sc_a7da59a02d8b",
+  "case_fingerprint": "0941fb2a140b063cf5b2c4b8a3b6212f4a3072e7f7d853db57903acdaaaff329",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "policy": "single-shot",
+  "status": "completed",
+  "steps": 1,
+  "tool_calls": 17,
+  "model_seconds": 4.422257300000638,
+  "observed": {
+    "sc_a7da59a02d8b-service-1": {
+      "id": "sc_a7da59a02d8b-service-1",
+      "kind": "service",
+      "service": "search-edge",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: search-edge. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_a7da59a02d8b-service-2": {
+      "id": "sc_a7da59a02d8b-service-2",
+      "kind": "service",
+      "service": "rank-api",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: rank-api. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_a7da59a02d8b-service-3": {
+      "id": "sc_a7da59a02d8b-service-3",
+      "kind": "service",
+      "service": "document-store",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: document-store. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "sc_a7da59a02d8b-service-4": {
+      "id": "sc_a7da59a02d8b-service-4",
+      "kind": "service",
+      "service": "feature-cache",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: feature-cache. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "ev_55ba96e0af0d": {
+      "id": "ev_55ba96e0af0d",
+      "kind": "metric",
+      "service": "document-store",
+      "content": "12:55-13:05 scrape coverage=100%; query_success=100%, query_p95_ms=6, CPU=19%, active_connections_p95=17/max=500, lock_waiters=0. All accepting listener probes passed. Baseline query p95=6 ms and CPU=20%.",
+      "timestamp": "2026-10-01T13:05:00Z"
+    },
+    "ev_9c682b363bab": {
+      "id": "ev_9c682b363bab",
+      "kind": "metric",
+      "service": "feature-cache",
+      "content": "12:55-13:05 samples complete: operation_success=100%, p95=2 ms, evictions=0, timeout_count=0, CPU=12%; baseline p95=2 ms, CPU=13%. Client reconnect_count=0.",
+      "timestamp": "2026-10-01T13:05:00Z"
+    },
+    "ev_b7878388cd43": {
+      "id": "ev_b7878388cd43",
+      "kind": "metric",
+      "service": "rank-api",
+      "content": "All one-minute buckets captured: request_success=100%, total_requests=72000, work_queue_p95=1, handler_p95_ms=65; document-store p95=6 ms and deadline_count=0; feature-cache p95=2 ms and deadline_count=0. Database client connections in_use_p95=17/max=80, acquisition_waiters=0. Baseline values remain within 5% of this window.",
+      "timestamp": "2026-10-01T13:05:00Z"
+    },
+    "ev_6933ff7a677c": {
+      "id": "ev_6933ff7a677c",
+      "kind": "metric",
+      "service": "search-edge",
+      "content": "All ten one-minute buckets 12:55-13:05 are present: /search accepted=120/s, HTTP 2xx=100%, HTTP 4xx=0, HTTP 5xx=0, p95 latency range=71-76 ms, p99=91-96 ms; previous ten-minute p95 range=70-77 ms. rank-api timeout_count=0; client connection waiters=0 and acquisition p95=1 ms.",
+      "timestamp": "2026-10-01T13:05:00Z"
+    },
+    "ev_f0749e609f59": {
+      "id": "ev_f0749e609f59",
+      "kind": "log",
+      "service": "document-store",
+      "content": "Window audit 12:55-13:05: sessions accepted=72000, completed=72000, transaction_errors=0, lock_timeouts=0; max_query_ms=14; active listener unchanged. Probe audit success=600 of 600 probes.",
+      "timestamp": "2026-10-01T13:05:00Z"
+    },
+    "ev_b64465071ea0": {
+      "id": "ev_b64465071ea0",
+      "kind": "log",
+      "service": "feature-cache",
+      "content": "request_id=5d9c operation=GET accepted_at=13:01:42.107Z completed_at=13:01:42.109Z result=HIT; same trace has no retry records; request and response counts reconciled.",
+      "timestamp": "2026-10-01T13:01:42Z",
+      "trace_id": "tr_d37a50c8"
+    },
+    "ev_b833088e1e54": {
+      "id": "ev_b833088e1e54",
+      "kind": "log",
+      "service": "rank-api",
+      "content": "request_id=5d9c received_at=13:01:42.102Z completed_at=13:01:42.170Z status=OK; document-store SELECT elapsed_ms=6 result=OK; feature-cache GET elapsed_ms=2 result=OK; queue_wait_ms=1; rank_compute_ms=57.",
+      "timestamp": "2026-10-01T13:01:42Z",
+      "trace_id": "tr_d37a50c8"
+    },
+    "ev_a490ca1834e3": {
+      "id": "ev_a490ca1834e3",
+      "kind": "log",
+      "service": "search-edge",
+      "content": "request_id=5d9c route=/search accepted_at=13:01:42.100Z response_at=13:01:42.174Z status=200; peer=rank-api status=OK span_ms=68; client_connection_wait_ms=1. End-of-window access-log audit: accepted=72000, completed=72000, non_2xx=0; audit covers every request in 12:55-13:05.",
+      "timestamp": "2026-10-01T13:01:42Z",
+      "trace_id": "tr_d37a50c8"
+    },
+    "ev_a2016e570b55": {
+      "id": "ev_a2016e570b55",
+      "kind": "change",
+      "service": "search-edge",
+      "content": "At 13:00 a documentation-link label was changed in the status page asset bundle. Serving binary hash, route table, dependency endpoints, request deadlines and pool limits stayed identical. Access-log audit before and after 13:00 retained 100% success.",
+      "timestamp": "2026-10-01T13:00:00Z"
+    },
+    "ev_2393c4827dc6": {
+      "id": "ev_2393c4827dc6",
+      "kind": "runbook",
+      "service": "search-edge",
+      "content": "During a verification, compare complete-window request outcomes, tail latency and dependency observations against the baseline. Explicitly separate observed normal outcomes from a lack of samples. Avoid proposing operational changes solely because a revision appears in the inventory.",
+      "timestamp": "2026-10-01T13:05:00Z"
+    }
+  },
+  "report": {
+    "status": "diagnosed",
+    "cause_code": "healthy",
+    "root_cause": "无故障证据：/search 服务路径在 12:55-13:05 窗口内各项观测均与基线一致，唯一变更为状态页文档链接文案，不影响服务行为。",
+    "root_service": "search-edge",
+    "evidence_ids": [
+      "ev_6933ff7a677c",
+      "ev_b7878388cd43",
+      "ev_55ba96e0af0d",
+      "ev_9c682b363bab",
+      "ev_a490ca1834e3",
+      "ev_b833088e1e54",
+      "ev_b64465071ea0",
+      "ev_f0749e609f59",
+      "ev_a2016e570b55",
+      "ev_2393c4827dc6"
+    ],
+    "explanation": "观测事实：search-edge 十个一分钟桶全存在，/search accepted=120/s，2xx=100%，4xx=0，5xx=0，p95 71-76 ms、p99 91-96 ms，与前一窗口 p95 70-77 ms 基本一致；结尾访问日志审计 accepted=72000、completed=72000、non_2xx=0（ev_6933ff7a677c、ev_a490ca1834e3）。rank-api 请求成功率 100%、total_requests=72000、work_queue_p95=1、handler_p95_ms=65，对 document-store p95=6 ms 与 feature-cache p95=2 ms 的 deadline_count 均为 0，DB 客户端 in_use_p95=17/max=80、无等待者（ev_b7878388cd43）。document-store 查询成功率 100%、p95=6 ms、sessions accepted=completed=72000、transaction_errors=0、lock_timeouts=0、锁等待者 0、active_connections 17/500（ev_55ba96e0af0d、ev_f0749e609f59）。feature-cache operation_success=100%、p95=2 ms、timeout_count=0、evictions=0、reconnect_count=0（ev_9c682b363bab）。单条 trace 显示 /search 200、span_ms=68，链路各跳均 OK（ev_a490ca1834e3、ev_b833088e1e54、ev_b64465071ea0）。唯一变更是 13:00 状态页文档链接文案改动，二进制哈希、路由表、依赖端点、超时与连接池上限均未变，且改动前后成功率均为 100%（ev_a2016e570b55）。推断：全部窗口覆盖完整且未见错误率升高、超时、排队等待或连接池压力，\"异常\"与时序不相关，不构成依赖超时、连接池耗尽或配置错误的证据；按 runbook 要求，仅凭清单中出现一次变更不应提出操作建议（ev_2393c4827dc6）。未决范围差异：本次仅有单条 trace 样本，尾部延迟为聚合区间而非逐桶明细，且无 change 记录覆盖 document-store/feature-cache/rank-api（空结果属缺失证据而非正常证明）。综合判断窗口内该路径健康。",
+    "next_steps": [
+      "无需执行任何修复操作；如需复核，请人工确认 12:55-13:05 各服务指标桶完整性与 100% 采集覆盖率（sc_a7da59a02d8b-service-1..4 的能力描述仅说明字段可采集，不作为健康证据）。",
+      "若运维方仍怀疑回归，建议人工抽取更多 /search 请求的 trace 样本，并核对 13:00 前后逐桶 p95/p99 明细，确认无未采集时段。",
+      "保留状态页文案变更记录，但不要仅因其出现在变更清单就触发操作变更。"
+    ]
+  },
+  "pending_model_request": false,
+  "usage": {
+    "prompt_tokens": 3268,
+    "completion_tokens": 928,
+    "total_tokens": 4196
+  },
+  "usage_complete": true,
+  "max_steps": 1,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "source": "synthetic",
+  "revision": 3,
+  "transport_attempts": 1,
+  "report_audit": {
+    "version": "1.0.0",
+    "issues": [],
+    "requires_review": false
+  },
+  "group_id": "challenge-v1:e03284d489ad",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00030",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 1,
+  "scripted_demo": false,
+  "wall_seconds": 4.5913996000017505,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 5620,
+    "delivered_records": 14,
+    "unique_records": 14,
+    "retrieval_calls": 16,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "synthetic": true,
+  "case_id": "inc006",
+  "alert": "[SYNTHETIC] 2026-09-25 16:10 UTC: checkout HTTP 504 increased to 15% and p95 latency to 3200 ms. A checkout release occurred shortly before the alert. Diagnose from this frozen snapshot only.",
+  "services": ["checkout", "inventory", "orders-db"],
+  "records": [
+    {"id": "inc006-m1", "kind": "metric", "service": "checkout", "timestamp": "2026-09-25T16:10:00Z", "content": "Outbound inventory RPC p95_ms=3150 (baseline 44); timeout_rate=15%, beginning at 16:03 UTC. db_pool_in_use=29/max=100; pool_waiters=0; acquisition_p95_ms=3. Request rate steady at 225/s."},
+    {"id": "inc006-m2", "kind": "metric", "service": "inventory", "timestamp": "2026-09-25T16:10:00Z", "content": "Inventory request_duration_p95_ms=4600 and queue_depth=520, beginning at 16:03 UTC. Timeout increases affect both checkout and an unchanged order-preview caller. Underlying reason for the queue growth is not captured."},
+    {"id": "inc006-m3", "kind": "metric", "service": "orders-db", "timestamp": "2026-09-25T16:10:00Z", "content": "Database CPU=22%; query_p95_ms=8; locks_waiting=0; stable baseline in 15:55–16:10 UTC."},
+    {"id": "inc006-l1", "kind": "log", "service": "checkout", "timestamp": "2026-09-25T16:03:30Z", "content": "ERROR trace=sample-006 build=checkout-v50 inventory.ReserveStock deadline exceeded after 3000 ms, mapped to HTTP 504. This error predates the checkout-v51 rollout."},
+    {"id": "inc006-l2", "kind": "log", "service": "inventory", "timestamp": "2026-09-25T16:03:30Z", "content": "WARN trace=sample-006 ReserveStock queue wait=4110 ms; request completed after the caller deadline."},
+    {"id": "inc006-l3", "kind": "log", "service": "checkout", "timestamp": "2026-09-25T16:09:10Z", "content": "ERROR build=checkout-v51 inventory.ReserveStock deadline exceeded after 3000 ms; error signature unchanged from build checkout-v50 before the rollout."},
+    {"id": "inc006-c1", "kind": "change", "service": "checkout", "timestamp": "2026-09-25T16:06:00Z", "content": "checkout-v51 rollout started 16:06 and completed 16:08 UTC. Diff changes static footer text only. No dependency client, timeout, route, or pool configuration changes. The first inventory timeout and downstream latency spike were at 16:03 UTC."},
+    {"id": "inc006-c2", "kind": "change", "service": "inventory", "timestamp": "2026-09-25T16:10:00Z", "content": "No inventory release recorded in the previous 24 hours. Infrastructure events are unavailable in this snapshot."},
+    {"id": "inc006-r1", "kind": "runbook", "service": "checkout", "content": "Dependency timeout triage: compare caller deadline errors with downstream latency and queue metrics. Check whether unchanged callers fail too. Distinguish the failing dependency from an unproven explanation of its internal slowdown."},
+    {"id": "inc006-r2", "kind": "runbook", "service": "checkout", "content": "Deployment triage: compare the first failure timestamp to rollout start and inspect the actual change. A release after the first failure cannot by itself explain the earlier failure. Propose rollback only when evidence supports a causal deployment change."}
+  ]
+}

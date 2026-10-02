@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "case_id": "inc001",
+  "alert": "[SYNTHETIC] 2026-09-20 10:05 UTC: checkout HTTP 5xx increased from 0.2% to 18%; p95 latency increased from 180 ms to 2800 ms. Diagnose from this frozen snapshot only.",
+  "services": ["checkout", "orders-db"],
+  "records": [
+    {"id": "inc001-m1", "kind": "metric", "service": "checkout", "timestamp": "2026-09-20T10:05:00Z", "content": "Window 10:03–10:05 UTC: db_pool_in_use=20, db_pool_max=20, pool_waiters=83, pool_acquire_wait_p95_ms=2300. Before 10:02: in_use=42, max=100, waiters=0, acquire_wait_p95_ms=4. Request rate unchanged at 240 requests/s."},
+    {"id": "inc001-m2", "kind": "metric", "service": "orders-db", "timestamp": "2026-09-20T10:05:00Z", "content": "Database CPU=23% (baseline 22%); query_p95_ms=8 (baseline 8); active_connections=20; max_connections=500; locks_waiting=0. No database-side saturation in this window."},
+    {"id": "inc001-m3", "kind": "metric", "service": "checkout", "timestamp": "2026-09-20T10:05:00Z", "content": "Inventory RPC p95=42 ms (baseline 41 ms); timeout_rate=0.0%; checkout process CPU=31% and memory=410 MiB (baseline 405 MiB)."},
+    {"id": "inc001-l1", "kind": "log", "service": "checkout", "timestamp": "2026-09-20T10:04:12Z", "content": "ERROR trace=sample-001 route=/checkout PoolAcquireTimeout: unable to acquire orders-db connection within 2000 ms; in_use=20 max=20; transaction not started. Same error observed in 172 requests in the last minute."},
+    {"id": "inc001-l2", "kind": "log", "service": "orders-db", "timestamp": "2026-09-20T10:04:20Z", "content": "INFO sampled queries completed in 5–9 ms; no slow-query or lock-timeout events recorded in 10:00–10:05 UTC."},
+    {"id": "inc001-c1", "kind": "change", "service": "checkout", "timestamp": "2026-09-20T10:02:00Z", "content": "Deployment checkout-v42 completed at 10:02 UTC. Effective runtime configuration diff: DB_POOL_MAX 100 -> 20. DB_POOL_ACQUIRE_TIMEOUT_MS remains 2000. Error increase begins at 10:03 UTC."},
+    {"id": "inc001-c2", "kind": "change", "service": "orders-db", "timestamp": "2026-09-20T10:05:00Z", "content": "Change inventory covers 09:00–10:05 UTC: no database deployment, schema migration, or connection-limit change recorded."},
+    {"id": "inc001-r1", "kind": "runbook", "service": "checkout", "content": "Connection pool triage: compare in-use connections with the effective pool maximum and waiting requests; distinguish client acquisition timeouts from slow queries. Check rollout configuration diffs and database CPU/locks. A proposed pool-limit restoration requires owner approval and database capacity review; this tool cannot execute it."},
+    {"id": "inc001-r2", "kind": "runbook", "service": "checkout", "content": "Incident triage: establish the failing path with metrics and logs, seek evidence contradicting the leading hypothesis, and verify timing before attributing a fault to a recent deployment. State uncertainty when the snapshot cannot establish a cause."}
+  ]
+}

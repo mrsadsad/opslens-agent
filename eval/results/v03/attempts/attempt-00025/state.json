@@ -1,0 +1,217 @@
+{
+  "run_id": "6c864b7c39e740239163dc06d7a26bb6",
+  "case_id": "sc_4999df7e6986",
+  "case_fingerprint": "e05b432c474dac93615be9768903efd8a3babfbefb5c1e55602b9812625da9aa",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "definition_hash": "a8559cc34180a493c0b8d00fdcc1090e921a95aa28bb7fc7803c2659117ba2dc",
+  "policy": "react",
+  "source": "synthetic",
+  "status": "completed",
+  "steps": 5,
+  "tool_calls": 14,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "observed": {
+    "sc_4999df7e6986-service-1": {
+      "id": "sc_4999df7e6986-service-1",
+      "kind": "service",
+      "service": "front-door",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: front-door. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "sc_4999df7e6986-service-2": {
+      "id": "sc_4999df7e6986-service-2",
+      "kind": "service",
+      "service": "invoice-api",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: invoice-api. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "sc_4999df7e6986-service-3": {
+      "id": "sc_4999df7e6986-service-3",
+      "kind": "service",
+      "service": "account-api",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: account-api. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "change",
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "sc_4999df7e6986-service-4": {
+      "id": "sc_4999df7e6986-service-4",
+      "kind": "service",
+      "service": "event-store",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: event-store. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "metric"
+        ],
+        "phases_by_kind": {
+          "metric": []
+        },
+        "unphased_kinds": [
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "ev_4b9bf3276a19": {
+      "id": "ev_4b9bf3276a19",
+      "kind": "metric",
+      "service": "front-door",
+      "content": "11:24-11:26 /submit status_500_count=420 of 6000 requests, CPU=26%, memory=380 MiB; 11:20-11:23 status_500_count=3 of 9000. The export has no upstream timing, connection-acquisition histogram or endpoint destination tags for the affected window.",
+      "timestamp": "2026-10-01T11:30:00Z"
+    },
+    "ev_423d91c387c3": {
+      "id": "ev_423d91c387c3",
+      "kind": "log",
+      "service": "front-door",
+      "content": "route=/submit http_status=500 exception_class=redacted detail=redacted trace_id=not_recorded upstream_name=not_recorded. Ring buffer retained 1 of 420 error events; this is the only surviving error event.",
+      "timestamp": "2026-10-01T11:24:36Z"
+    },
+    "ev_8753dba7df6f": {
+      "id": "ev_8753dba7df6f",
+      "kind": "change",
+      "service": "front-door",
+      "content": "Last reliable configuration inventory was captured at 11:00. Delta synchronization failed at 11:21; runtime readback and application revision membership for 11:24-11:26 were not retained.",
+      "timestamp": "2026-10-01T11:30:00Z"
+    },
+    "ev_096b30ea4a65": {
+      "id": "ev_096b30ea4a65",
+      "kind": "metric",
+      "service": "invoice-api",
+      "content": "Last scrape=11:23:00: request p95=41 ms, error_rate=0.1%, process CPU=23%. No successful scrapes occurred between 11:24 and 11:29; missing samples were not filled with zero.",
+      "timestamp": "2026-10-01T11:23:00Z"
+    },
+    "ev_d1228be67124": {
+      "id": "ev_d1228be67124",
+      "kind": "metric",
+      "service": "account-api",
+      "content": "Captured scrape at 11:29:00: request p95=36 ms, error_rate=0.0%, work_queue=1. The collector has no account-api samples for 11:20-11:28 and no historical log export.",
+      "timestamp": "2026-10-01T11:29:00Z"
+    },
+    "ev_563b24dc82a1": {
+      "id": "ev_563b24dc82a1",
+      "kind": "metric",
+      "service": "event-store",
+      "content": "11:25:00-11:26:00 server query p95=9 ms, CPU=22%, lock_waiters=0. Per-caller connection state and application client-side connection acquisition were not measured. Earlier and later one-minute store samples are absent.",
+      "timestamp": "2026-10-01T11:25:00Z"
+    },
+    "ev_304b4221da5d": {
+      "id": "ev_304b4221da5d",
+      "kind": "change",
+      "service": "account-api",
+      "content": "Inventory lists a revision at 10:15. Inventory service disconnected at 11:15; no later deployment or host-event records are available.",
+      "timestamp": "2026-10-01T11:30:00Z"
+    }
+  },
+  "report": {
+    "status": "insufficient_evidence",
+    "cause_code": "insufficient_evidence",
+    "root_service": "",
+    "root_cause": "front-door 在 11:24-11:26 对 /submit 大量返回 HTTP 500，但冻结快照缺少把该故障归因到具体上游服务与失败机制的证据（上游标识、连接获取/超时指标、trace 均缺失）。",
+    "evidence_ids": [
+      "ev_4b9bf3276a19",
+      "ev_423d91c387c3",
+      "ev_8753dba7df6f",
+      "ev_096b30ea4a65",
+      "ev_d1228be67124",
+      "ev_563b24dc82a1",
+      "ev_304b4221da5d"
+    ],
+    "explanation": "已观测事实：前端 ev_4b9bf3276a19 记录 11:24-11:26 /submit 有 420/6000 次请求返回 500（7.0%，与该窗口 6000 的分母一致），而 11:20-11:23 为 3/9000；CPU 26%、内存 380 MiB 并不异常。前端日志仅保留 1 条错误事件 ev_423d91c387c3（420 条中仅存 1 条），且 exception_class、detail、trace_id、upstream_name 全被脱敏或未记录，无法指出失败机制或上游。配置侧 ev_8753dba7df6f 显示 11:21 配置增量同步失败、11:00 之后无可信配置清单，运行时回读与应用版本成员未保留——这只说明配置侧存在证据缺口，不能证明 bad_configuration。上游侧同样无法区分竞争假设：invoice-api 最后一次成功抓取为 11:23（p95 41 ms，错误率 0.1%，ev_096b30ea4a65），11:24-11:29 无成功样本（未以零填充，属缺失而非正常）；account-api 无 11:20-11:28 样本，仅 11:29 一次（p95 36 ms，错误率 0.0%，ev_d1228be67124）；event-store 在 11:25-11:26 服务端查询 p95 9 ms、lock_waiters=0（ev_563b24dc82a1），且明确未测量每调用方连接状态与应用侧连接获取——因此既不能证实 connection_pool_exhaustion，也不能证实 dependency_timeout。此外各服务均无 trace_kinds，前端错误日志中的 trace_id 为 not_recorded，无法做跨服务追踪；也未在任何服务检索到 runbook 条目，get_changes 仅有上述两条元数据类记录。结论：可以支持“11:24-11:26 前端 /submit 出现约 7% 的 500 突发”这一事实，但不足以判定根因服务或归类到 connection_pool_exhaustion / dependency_timeout / bad_configuration；上游样本缺失不可当作健康证据，故按 insufficient_evidence 提交，不做因果断言。",
+    "next_steps": [
+      "人工恢复并核对 11:24-11:26 的前端访问日志/错误日志（当前 420 条仅存 1 条），提取未脱敏的 exception_class、detail 与 upstream_name",
+      "人工核查 11:21 失败的配置增量同步：对比 11:00 配置清单与故障窗口实际运行的配置/版本成员，确认是否存在与应用版本错配的配置变更",
+      "人工采集故障窗口内各上游（invoice-api、account-api、event-store）的调用端指标：连接池占用/等待队列、连接获取耗时直方图、客户端超时与重试计数",
+      "修复采集器缺口：恢复 11:24-11:29 对 invoice-api/account-api 的抓取，并补充 event-store 每调用方连接状态，避免以缺失样本推断健康",
+      "在具备结构化 trace 字段后，用真实 trace_id 复现一次 /submit 请求以区分‘上游超时’与‘连接获取失败’两类机制"
+    ]
+  },
+  "report_audit": {
+    "version": "1.0.0",
+    "issues": [],
+    "requires_review": false
+  },
+  "usage": {
+    "prompt_tokens": 15254,
+    "completion_tokens": 1462,
+    "total_tokens": 16716
+  },
+  "usage_complete": true,
+  "model_seconds": 8.843546599993715,
+  "pending_model_request": false,
+  "hypotheses": {},
+  "tool_seconds": 0.010001399990869686,
+  "transport_attempts": 5,
+  "transport_attempts_complete": true,
+  "revision": 11,
+  "group_id": "challenge-v1:cbf514c68482",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00025",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 5,
+  "scripted_demo": false,
+  "wall_seconds": 9.206610399996862,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 4481,
+    "delivered_records": 12,
+    "unique_records": 11,
+    "retrieval_calls": 13,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

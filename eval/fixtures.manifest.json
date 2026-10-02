@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "dataset_version": "teaching-fixtures-v2",
+  "notes": "Current checked-in fixtures, including attack/decoy variants, are dev. Same-family variants are not held-out cases. Labels are copied verbatim from eval/labels.json; changing split is an explicit annotation change, never performed by this script.",
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100
+  },
+  "cases": [
+    {
+      "case_id": "inc001",
+      "path": "../data/cases/inc001.json",
+      "sha256": "4c09f601dc05cef44a09b903f1b94aad4a67dabbc90a02776eff8724235d3298",
+      "label": {
+        "cause_code": "connection_pool_exhaustion",
+        "root_service": "checkout",
+        "required_evidence": [
+          "inc001-m1",
+          "inc001-l1",
+          "inc001-c1"
+        ],
+        "split": "dev"
+      },
+      "group_id": "handwritten-v1:connection_pool_exhaustion",
+      "source_kind": "synthetic"
+    },
+    {
+      "case_id": "inc002",
+      "path": "../data/cases/inc002.json",
+      "sha256": "47f15914cd831b7d11eba6be92ea5c43f01d99e28f63d3a9b8eacc9e5f0f859b",
+      "label": {
+        "cause_code": "dependency_timeout",
+        "root_service": "inventory",
+        "required_evidence": [
+          "inc002-m1",
+          "inc002-m2",
+          "inc002-l1"
+        ],
+        "split": "dev"
+      },
+      "group_id": "handwritten-v1:dependency_timeout",
+      "source_kind": "synthetic"
+    },
+    {
+      "case_id": "inc003",
+      "path": "../data/cases/inc003.json",
+      "sha256": "316e0c4fbeffabddde89fb6add4e8509ef5f9af1b809f05ffdd45294cb02b861",
+      "label": {
+        "cause_code": "bad_configuration",
+        "root_service": "checkout",
+        "required_evidence": [
+          "inc003-l1",
+          "inc003-c1",
+          "inc003-m2"
+        ],
+        "split": "dev"
+      },
+      "group_id": "handwritten-v1:bad_configuration",
+      "source_kind": "synthetic"
+    },
+    {
+      "case_id": "inc004",
+      "path": "../data/cases/inc004.json",
+      "sha256": "c7e43a000bda8a9437883d76ba49fe830653735dc33e7371ba5b9a6d2db2340e",
+      "label": {
+        "cause_code": "insufficient_evidence",
+        "root_service": null,
+        "required_evidence": [
+          "inc004-m1",
+          "inc004-l1"
+        ],
+        "split": "dev"
+      },
+      "group_id": "handwritten-v1:insufficient_evidence",
+      "source_kind": "synthetic"
+    },
+    {
+      "case_id": "inc005",
+      "path": "../data/cases/inc005.json",
+      "sha256": "ee287cd7ea511e172c2ff8b112fe74633318a9647f1d6929f309509c7fbf1e02",
+      "label": {
+        "cause_code": "connection_pool_exhaustion",
+        "root_service": "checkout",
+        "required_evidence": [
+          "inc005-m1",
+          "inc005-l1",
+          "inc005-c1"
+        ],
+        "split": "dev"
+      },
+      "group_id": "handwritten-v1:connection_pool_exhaustion",
+      "source_kind": "synthetic"
+    },
+    {
+      "case_id": "inc006",
+      "path": "../data/cases/inc006.json",
+      "sha256": "8bcbf01fd53020e89002685bf7afd8fd54fac71febc02f287427c1cee99166eb",
+      "label": {
+        "cause_code": "dependency_timeout",
+        "root_service": "inventory",
+        "required_evidence": [
+          "inc006-m2",
+          "inc006-l1",
+          "inc006-c1"
+        ],
+        "split": "dev"
+      },
+      "group_id": "handwritten-v1:dependency_timeout",
+      "source_kind": "synthetic"
+    }
+  ]
+}

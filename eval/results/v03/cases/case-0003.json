@@ -1,0 +1,228 @@
+{
+  "synthetic": false,
+  "source": "local_fault_lab",
+  "case_id": "case-29eb33d90a074bef863815dd0a54a89b",
+  "alert": "Local HTTP observation: svc-ac0a5d8f79 returned 20 non-success responses in 24 requests during phase=fault; measured p95=124.726 ms. Compare baseline and recovery evidence. This is a local controlled experiment, not production telemetry.",
+  "services": [
+    "svc-ac0a5d8f79",
+    "svc-a7adb501af"
+  ],
+  "records": [
+    {
+      "id": "e-d0632b628831463780194da136f5d98d",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"component\": \"load_client\", \"error_counts\": {\"pool_acquire_timeout\": 20}, \"error_rate\": 0.833333, \"errors\": 20, \"latency_p50_ms\": 60.899, \"latency_p95_ms\": 124.726, \"phase\": \"fault\", \"requests\": 24, \"status_counts\": {\"200\": 4, \"503\": 20}}"
+    },
+    {
+      "id": "e-ff4d925416804c1b9ae5ec0cff88d3bb",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"acquire_wait_p95_ms\": 58.103, \"component\": \"checkout\", \"error_counts\": {\"pool_acquire_timeout\": 20}, \"error_rate\": 0.833333, \"errors\": 20, \"latency_p50_ms\": 56.191, \"latency_p95_ms\": 100.95, \"outbound_latency_p95_ms\": 78.594, \"phase\": \"fault\", \"pool_in_use\": 0, \"pool_max\": 1, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 7, \"pool_waiters\": 0, \"requests\": 24, \"status_counts\": {\"200\": 4, \"503\": 20}}"
+    },
+    {
+      "id": "e-c3202c98e06b41aaa88e919c0d28d802",
+      "kind": "metric",
+      "service": "svc-a7adb501af",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"component\": \"dependency\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 60.563, \"latency_p95_ms\": 61.164, \"phase\": \"fault\", \"requests\": 4, \"status_counts\": {\"200\": 4}}"
+    },
+    {
+      "id": "e-011a882a60a84d1189ae636c7787cc4a",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:03.818+00:00",
+      "content": "{\"acquire_wait_ms\": 48.906, \"component\": \"checkout\", \"error_code\": \"pool_acquire_timeout\", \"event\": \"http_request\", \"latency_ms\": 49.673, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"fault\", \"pool_in_use\": 1, \"pool_max\": 1, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 7, \"pool_waiters\": 6, \"request_id\": \"req-5d144103c9544cc9b513cb273444f051\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 503, \"timestamp\": \"2026-10-01T12:37:03.818+00:00\", \"trace_id\": \"trace-2e9a2c6927594f9aaff3f7fb3854aabf\"}",
+      "trace_id": "trace-2e9a2c6927594f9aaff3f7fb3854aabf",
+      "request_id": "req-5d144103c9544cc9b513cb273444f051"
+    },
+    {
+      "id": "e-985f10b5aca64f18b55d9b89767671ae",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:03.820+00:00",
+      "content": "{\"acquire_wait_ms\": 48.714, \"component\": \"checkout\", \"error_code\": \"pool_acquire_timeout\", \"event\": \"http_request\", \"latency_ms\": 49.569, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"fault\", \"pool_in_use\": 1, \"pool_max\": 1, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 7, \"pool_waiters\": 5, \"request_id\": \"req-48f935617e924ff89596c37dec9d7b7e\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 503, \"timestamp\": \"2026-10-01T12:37:03.820+00:00\", \"trace_id\": \"trace-0ec7e86aede44da4917e7a8a0400af5a\"}",
+      "trace_id": "trace-0ec7e86aede44da4917e7a8a0400af5a",
+      "request_id": "req-48f935617e924ff89596c37dec9d7b7e"
+    },
+    {
+      "id": "e-3ce7e58561c748079db4c84d27c684cb",
+      "kind": "log",
+      "service": "svc-a7adb501af",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:03.817+00:00",
+      "content": "{\"component\": \"dependency\", \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 60.778, \"method\": \"GET\", \"path\": \"/work\", \"phase\": \"fault\", \"request_id\": \"req-c2cdea8f98c0402698e053c185a81959\", \"response_delivered\": true, \"service\": \"svc-a7adb501af\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.817+00:00\", \"trace_id\": \"trace-62b17e826b0f439797b8361a0bce1324\"}",
+      "trace_id": "trace-62b17e826b0f439797b8361a0bce1324",
+      "request_id": "req-c2cdea8f98c0402698e053c185a81959"
+    },
+    {
+      "id": "e-f9cf91a48c1e462ab20ac15d975f8ca8",
+      "kind": "log",
+      "service": "svc-a7adb501af",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:03.882+00:00",
+      "content": "{\"component\": \"dependency\", \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 60.563, \"method\": \"GET\", \"path\": \"/work\", \"phase\": \"fault\", \"request_id\": \"req-8abfbb511a6142b5ac2b2375a2958dfb\", \"response_delivered\": true, \"service\": \"svc-a7adb501af\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.882+00:00\", \"trace_id\": \"trace-25641ad0ee3940aa8bb5c1f6c016fc9a\"}",
+      "trace_id": "trace-25641ad0ee3940aa8bb5c1f6c016fc9a",
+      "request_id": "req-8abfbb511a6142b5ac2b2375a2958dfb"
+    },
+    {
+      "id": "e-8fafdae3cd0b4720bf94ded3dd925567",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"component\": \"load_client\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 64.863, \"latency_p95_ms\": 67.953, \"phase\": \"baseline\", \"requests\": 24, \"status_counts\": {\"200\": 24}}"
+    },
+    {
+      "id": "e-441fdeecd17f4b67ac519fb41543ec8b",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"acquire_wait_p95_ms\": 0.004, \"component\": \"checkout\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 62.631, \"latency_p95_ms\": 64.535, \"outbound_latency_p95_ms\": 63.641, \"phase\": \"baseline\", \"pool_in_use\": 0, \"pool_max\": 8, \"pool_peak_in_use\": 8, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"requests\": 24, \"status_counts\": {\"200\": 24}}"
+    },
+    {
+      "id": "e-66234c7d6a5f48f7836d6781017306dd",
+      "kind": "metric",
+      "service": "svc-a7adb501af",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"component\": \"dependency\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 60.663, \"latency_p95_ms\": 61.489, \"phase\": \"baseline\", \"requests\": 24, \"status_counts\": {\"200\": 24}}"
+    },
+    {
+      "id": "e-e60a96d1d9674f7b8a063f2271bbe75d",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:03.604+00:00",
+      "content": "{\"acquire_wait_ms\": 0.004, \"component\": \"checkout\", \"dependency_latency_ms\": 62.291, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 62.499, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"baseline\", \"pool_in_use\": 1, \"pool_max\": 8, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-3b062eb823a743c5b8b6e903ec314012\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.604+00:00\", \"trace_id\": \"trace-4bafc21b054649d5bd24d036aec74ca7\"}",
+      "trace_id": "trace-4bafc21b054649d5bd24d036aec74ca7",
+      "request_id": "req-3b062eb823a743c5b8b6e903ec314012"
+    },
+    {
+      "id": "e-9cdb9580f4ef4e258d88c3643c04abba",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:03.605+00:00",
+      "content": "{\"acquire_wait_ms\": 0.004, \"component\": \"checkout\", \"dependency_latency_ms\": 62.115, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 62.514, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"baseline\", \"pool_in_use\": 2, \"pool_max\": 8, \"pool_peak_in_use\": 2, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-aca3f77b4fd645bb925ea8dadc784a2d\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.605+00:00\", \"trace_id\": \"trace-a2b4a951b6a44198893bc96e7f53df6b\"}",
+      "trace_id": "trace-a2b4a951b6a44198893bc96e7f53df6b",
+      "request_id": "req-aca3f77b4fd645bb925ea8dadc784a2d"
+    },
+    {
+      "id": "e-a3146ea58c5d41b3bf58fce6b1b33891",
+      "kind": "log",
+      "service": "svc-a7adb501af",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:03.606+00:00",
+      "content": "{\"component\": \"dependency\", \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 60.506, \"method\": \"GET\", \"path\": \"/work\", \"phase\": \"baseline\", \"request_id\": \"req-3b062eb823a743c5b8b6e903ec314012\", \"response_delivered\": true, \"service\": \"svc-a7adb501af\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.606+00:00\", \"trace_id\": \"trace-4bafc21b054649d5bd24d036aec74ca7\"}",
+      "trace_id": "trace-4bafc21b054649d5bd24d036aec74ca7",
+      "request_id": "req-3b062eb823a743c5b8b6e903ec314012"
+    },
+    {
+      "id": "e-3c3b99a0460b42c2a3d39ec63f3c5399",
+      "kind": "log",
+      "service": "svc-a7adb501af",
+      "phase": "baseline",
+      "timestamp": "2026-10-01T12:37:03.607+00:00",
+      "content": "{\"component\": \"dependency\", \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 60.74, \"method\": \"GET\", \"path\": \"/work\", \"phase\": \"baseline\", \"request_id\": \"req-aca3f77b4fd645bb925ea8dadc784a2d\", \"response_delivered\": true, \"service\": \"svc-a7adb501af\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.607+00:00\", \"trace_id\": \"trace-a2b4a951b6a44198893bc96e7f53df6b\"}",
+      "trace_id": "trace-a2b4a951b6a44198893bc96e7f53df6b",
+      "request_id": "req-aca3f77b4fd645bb925ea8dadc784a2d"
+    },
+    {
+      "id": "e-785d1e931ecf46948eb3d6ae3f358c11",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"component\": \"load_client\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 67.167, \"latency_p95_ms\": 90.925, \"phase\": \"recovery\", \"requests\": 24, \"status_counts\": {\"200\": 24}}"
+    },
+    {
+      "id": "e-21e117bc356542508e9dcaa4dab3bc5c",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"acquire_wait_p95_ms\": 0.009, \"component\": \"checkout\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 63.233, \"latency_p95_ms\": 76.558, \"outbound_latency_p95_ms\": 76.071, \"phase\": \"recovery\", \"pool_in_use\": 0, \"pool_max\": 8, \"pool_peak_in_use\": 8, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"requests\": 24, \"status_counts\": {\"200\": 24}}"
+    },
+    {
+      "id": "e-662880ca008a4d42bdc91f270ec318fc",
+      "kind": "metric",
+      "service": "svc-a7adb501af",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"component\": \"dependency\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 60.603, \"latency_p95_ms\": 62.499, \"phase\": \"recovery\", \"requests\": 24, \"status_counts\": {\"200\": 24}}"
+    },
+    {
+      "id": "e-045783dd30104692bc621a118c980603",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.089+00:00",
+      "content": "{\"acquire_wait_ms\": 0.009, \"component\": \"checkout\", \"dependency_latency_ms\": 62.522, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 62.801, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"recovery\", \"pool_in_use\": 1, \"pool_max\": 8, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-d1e562c029d140468fd31b0e20f3a490\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:04.089+00:00\", \"trace_id\": \"trace-ae1e3a9d0428449cad48d98723a431b7\"}",
+      "trace_id": "trace-ae1e3a9d0428449cad48d98723a431b7",
+      "request_id": "req-d1e562c029d140468fd31b0e20f3a490"
+    },
+    {
+      "id": "e-c2ed6578839d442b9f7db40b4cc1bd12",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.090+00:00",
+      "content": "{\"acquire_wait_ms\": 0.003, \"component\": \"checkout\", \"dependency_latency_ms\": 62.207, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 63.412, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"recovery\", \"pool_in_use\": 3, \"pool_max\": 8, \"pool_peak_in_use\": 3, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-d7c6d4e1dc5f4657ab8a8664d9db43ea\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:04.090+00:00\", \"trace_id\": \"trace-cd1b99b475034fecb7a3e469103bbfc0\"}",
+      "trace_id": "trace-cd1b99b475034fecb7a3e469103bbfc0",
+      "request_id": "req-d7c6d4e1dc5f4657ab8a8664d9db43ea"
+    },
+    {
+      "id": "e-535ea6a9102c4037a559de02791f5ca1",
+      "kind": "log",
+      "service": "svc-a7adb501af",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.090+00:00",
+      "content": "{\"component\": \"dependency\", \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 60.314, \"method\": \"GET\", \"path\": \"/work\", \"phase\": \"recovery\", \"request_id\": \"req-d1e562c029d140468fd31b0e20f3a490\", \"response_delivered\": true, \"service\": \"svc-a7adb501af\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:04.090+00:00\", \"trace_id\": \"trace-ae1e3a9d0428449cad48d98723a431b7\"}",
+      "trace_id": "trace-ae1e3a9d0428449cad48d98723a431b7",
+      "request_id": "req-d1e562c029d140468fd31b0e20f3a490"
+    },
+    {
+      "id": "e-b20e45d71339486fab055f60ea2e1003",
+      "kind": "log",
+      "service": "svc-a7adb501af",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.090+00:00",
+      "content": "{\"component\": \"dependency\", \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 60.326, \"method\": \"GET\", \"path\": \"/work\", \"phase\": \"recovery\", \"request_id\": \"req-d7c6d4e1dc5f4657ab8a8664d9db43ea\", \"response_delivered\": true, \"service\": \"svc-a7adb501af\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:04.090+00:00\", \"trace_id\": \"trace-cd1b99b475034fecb7a3e469103bbfc0\"}",
+      "trace_id": "trace-cd1b99b475034fecb7a3e469103bbfc0",
+      "request_id": "req-d7c6d4e1dc5f4657ab8a8664d9db43ea"
+    },
+    {
+      "id": "e-ee5880eae47e4ad59a2d3791de007842",
+      "kind": "change",
+      "service": "svc-ac0a5d8f79",
+      "phase": "fault",
+      "timestamp": "2026-10-01T12:37:03.816+00:00",
+      "content": "{\"differences\": {\"pool_max\": {\"after\": 1, \"before\": 8}}, \"event\": \"effective_configuration_change\", \"phase\": \"fault\", \"service\": \"svc-ac0a5d8f79\", \"timestamp\": \"2026-10-01T12:37:03.816+00:00\"}"
+    },
+    {
+      "id": "e-6e81638ca8554cbd8710baadeb0b6002",
+      "kind": "change",
+      "service": "svc-ac0a5d8f79",
+      "phase": "recovery",
+      "timestamp": "2026-10-01T12:37:04.086+00:00",
+      "content": "{\"differences\": {\"pool_max\": {\"after\": 8, \"before\": 1}}, \"event\": \"effective_configuration_change\", \"phase\": \"recovery\", \"service\": \"svc-ac0a5d8f79\", \"timestamp\": \"2026-10-01T12:37:04.086+00:00\"}"
+    },
+    {
+      "id": "e-eb55e3bc2881483cbe9c06f4afe7fd4c",
+      "kind": "runbook",
+      "service": "svc-ac0a5d8f79",
+      "phase": "reference",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "content": "{\"phase\": \"reference\", \"text\": \"HTTP incident triage: compare observed baseline, intervention-window, and recovery measurements. Correlate request_id and trace_id across caller and dependency. Distinguish pool acquisition errors, deadline errors and HTTP status errors; check effective configuration changes. A no-op control can be healthy. Missing requests are not proof of a healthy dependency. This is general guidance, not an incident diagnosis.\"}"
+    }
+  ]
+}

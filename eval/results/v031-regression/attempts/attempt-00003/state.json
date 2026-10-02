@@ -1,0 +1,235 @@
+{
+  "run_id": "bd826423f32b4c78ac173805d7a6bd6f",
+  "case_id": "inc001",
+  "case_fingerprint": "4c09f601dc05cef44a09b903f1b94aad4a67dabbc90a02776eff8724235d3298",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "definition_hash": "60c27f7429f807b01d4c485899a21e43b2d7dbff878cfe9ce8bd0588fd590560",
+  "policy": "investigator",
+  "source": "synthetic",
+  "status": "completed",
+  "steps": 6,
+  "tool_calls": 14,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "observed": {
+    "inc001-service-1": {
+      "id": "inc001-service-1",
+      "kind": "service",
+      "service": "checkout",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: checkout. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "inc001-service-2": {
+      "id": "inc001-service-2",
+      "kind": "service",
+      "service": "orders-db",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: orders-db. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "inc001-c1": {
+      "id": "inc001-c1",
+      "kind": "change",
+      "service": "checkout",
+      "content": "Deployment checkout-v42 completed at 10:02 UTC. Effective runtime configuration diff: DB_POOL_MAX 100 -> 20. DB_POOL_ACQUIRE_TIMEOUT_MS remains 2000. Error increase begins at 10:03 UTC.",
+      "timestamp": "2026-09-20T10:02:00Z"
+    },
+    "inc001-c2": {
+      "id": "inc001-c2",
+      "kind": "change",
+      "service": "orders-db",
+      "content": "Change inventory covers 09:00–10:05 UTC: no database deployment, schema migration, or connection-limit change recorded.",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-m1": {
+      "id": "inc001-m1",
+      "kind": "metric",
+      "service": "checkout",
+      "content": "Window 10:03–10:05 UTC: db_pool_in_use=20, db_pool_max=20, pool_waiters=83, pool_acquire_wait_p95_ms=2300. Before 10:02: in_use=42, max=100, waiters=0, acquire_wait_p95_ms=4. Request rate unchanged at 240 requests/s.",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-m3": {
+      "id": "inc001-m3",
+      "kind": "metric",
+      "service": "checkout",
+      "content": "Inventory RPC p95=42 ms (baseline 41 ms); timeout_rate=0.0%; checkout process CPU=31% and memory=410 MiB (baseline 405 MiB).",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-m2": {
+      "id": "inc001-m2",
+      "kind": "metric",
+      "service": "orders-db",
+      "content": "Database CPU=23% (baseline 22%); query_p95_ms=8 (baseline 8); active_connections=20; max_connections=500; locks_waiting=0. No database-side saturation in this window.",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-l1": {
+      "id": "inc001-l1",
+      "kind": "log",
+      "service": "checkout",
+      "content": "ERROR trace=sample-001 route=/checkout PoolAcquireTimeout: unable to acquire orders-db connection within 2000 ms; in_use=20 max=20; transaction not started. Same error observed in 172 requests in the last minute.",
+      "timestamp": "2026-09-20T10:04:12Z"
+    },
+    "inc001-r1": {
+      "id": "inc001-r1",
+      "kind": "runbook",
+      "service": "checkout",
+      "content": "Connection pool triage: compare in-use connections with the effective pool maximum and waiting requests; distinguish client acquisition timeouts from slow queries. Check rollout configuration diffs and database CPU/locks. A proposed pool-limit restoration requires owner approval and database capacity review; this tool cannot execute it.",
+      "retrieval_score": 1.716652
+    }
+  },
+  "report": {
+    "status": "diagnosed",
+    "cause_code": "connection_pool_exhaustion",
+    "root_cause": "checkout 的 orders-db 连接池上限被下调至 20，容量不足以承载不变的请求负载，导致连接获取等待超时（PoolAcquireTimeout），5xx 与 p95 延迟上升。",
+    "root_service": "checkout",
+    "evidence_ids": [
+      "inc001-c1",
+      "inc001-m1",
+      "inc001-l1",
+      "inc001-m2",
+      "inc001-m3",
+      "inc001-r1",
+      "inc001-c2"
+    ],
+    "explanation": "受影响服务是 checkout（观测到的服务名）。观测事实：① inc001-c1 记录 10:02 UTC 部署 checkout-v42，生效运行时配置差异为 DB_POOL_MAX 100 -> 20，同时 DB_POOL_ACQUIRE_TIMEOUT_MS 保持 2000，错误自 10:03 UTC 开始上升；② inc001-m1 显示 10:03–10:05 窗口 db_pool_in_use=20 恰等于 db_pool_max=20（池被钉满）、pool_waiters=83、pool_acquire_wait_p95_ms=2300，而 10:02 前为 in_use=42、max=100、waiters=0、acquire_wait_p95_ms=4，请求率保持 240 req/s 不变；③ inc001-l1 为 /checkout 路由上的 PoolAcquireTimeout：2000 ms 内无法获得 orders-db 连接，in_use=20 max=20，事务未开始，1 分钟内 172 次。机制：池容量被削减后并发连接需求超过上限，请求在获取阶段排队，等待 p95 2300 ms 超过 2000 ms 的获取超时，请求在开始事务前即失败，因此表现为 5xx 与 p95 延迟上升——这与工单中的 5xx 0.2%→18%、p95 180 ms→2800 ms 同步一致（该对照数字来自工单观测，非本快照记录）。竞争解释已被区分：依赖超时（dependency_timeout）被排除——inc001-m2 显示 orders-db query_p95=8 ms（基线 8 ms）、CPU 23%（基线 22%）、active_connections=20/500、locks_waiting=0，无数据库侧饱和；inc001-m3 显示 inventory RPC p95=42 ms（基线 41 ms）、timeout_rate=0.0%，进程 CPU/内存接近基线。bad_configuration 亦不成立——变更差异仅是池上限，日志为连接获取超时而非路由/凭据/端点错误，且端点可达（连接建立后被池上限阻塞）。触发因素（供参考，不与机制混淆）：一次配置下发把池上限从 100 降到 20，容量无法匹配 240 req/s 的既有负载；这是触发条件，本周期的失效机制是池获取排队耗尽。未执行也未声称执行任何修复；建议人工复核。",
+    "next_steps": [
+      "由 checkout 与数据库负责人人工复核 checkout-v42 的 DB_POOL_MAX=20 配置是否为预期，并结合 orders-db 侧容量（max_connections=500，当前 active=20）评估恢复原上限 100 或设定合理中间值；变更需审批，本文档工具不执行任何变更。",
+      "继续观察 pool_waiters、db_pool_in_use/db_pool_max、pool_acquire_wait_p95_ms 与 PoolAcquireTimeout 计数：若池上限恢复后 waiters→0、获取等待回到毫秒级且 5xx 回落，可确认该机制。",
+      "确认 5xx 上升的时间窗口与错误计数使用同一分母/时间窗口后再对外报告百分比，避免与工单口径混淆。",
+      "若恢复池上限后等待仍高，则需进一步检查获取阶段的连接泄漏或长事务占用（当前无证据）。"
+    ]
+  },
+  "report_audit": {
+    "version": "1.0.1",
+    "issues": [],
+    "requires_review": false
+  },
+  "usage": {
+    "prompt_tokens": 24256,
+    "completion_tokens": 2371,
+    "total_tokens": 26627
+  },
+  "usage_complete": true,
+  "model_seconds": 13.514858100010315,
+  "pending_model_request": false,
+  "hypotheses": {
+    "h1-pool": {
+      "id": "h1-pool",
+      "cause_code": "connection_pool_exhaustion",
+      "statement": "checkout 在 10:02 部署 checkout-v42 后 DB_POOL_MAX 由 100 降到 20，连接池容量不足以支撑不变的 240 req/s 负载，pool_acquire_wait_p95 由 4ms 升到 2300ms、waiters=83，超过 DB_POOL_ACQUIRE_TIMEOUT_MS=2000，导致 PoolAcquireTimeout 与 5xx 上升。",
+      "status": "supported",
+      "supporting_evidence_ids": [
+        "inc001-c1",
+        "inc001-m1",
+        "inc001-l1"
+      ],
+      "contradicting_evidence_ids": [],
+      "next_check": "核对部署后 in_use 是否长期钉在 max=20、等待队列是否随请求率上升；若扩容/回滚 DB_POOL_MAX 后 waiters 与 5xx 回落则确认。"
+    },
+    "h2-dep-timeout": {
+      "id": "h2-dep-timeout",
+      "cause_code": "dependency_timeout",
+      "statement": "下游依赖（orders-db 查询或 inventory RPC）变慢导致 checkout 超时。若成立应有下游/查询延迟升高。",
+      "status": "ruled_out",
+      "supporting_evidence_ids": [
+        "inc001-l1"
+      ],
+      "contradicting_evidence_ids": [
+        "inc001-m2",
+        "inc001-m3"
+      ],
+      "next_check": "无：orders-db query_p95=8ms 与基线一致、active_connections=20/500、无锁等待；inventory RPC p95=42ms（基线 41ms）、timeout_rate=0%。"
+    },
+    "h3-badcfg": {
+      "cause_code": "bad_configuration",
+      "id": "h3-badcfg",
+      "statement": "替代假设：checkout-v42 引入了错误的路由/端点/凭据等配置导致 5xx。若成立应看到路由或认证错误、或下游拒绝连接，而不是等连接释放。",
+      "status": "ruled_out",
+      "supporting_evidence_ids": [
+        "inc001-c1"
+      ],
+      "contradicting_evidence_ids": [
+        "inc001-l1",
+        "inc001-m1",
+        "inc001-m2"
+      ],
+      "next_check": "无：唯一配置差异是池上限；报错为连接获取超时（事务未开始），orders-db 侧连接数 20/500、无拒绝，端点本身可达。"
+    },
+    "h4-healthy": {
+      "cause_code": "healthy",
+      "id": "h4-healthy",
+      "statement": "替代假设：checkout 与依赖仍处于正常运作，5xx/latency 上升只是噪声。若成立应有 5xx 维持基线与获取等待正常。",
+      "status": "ruled_out",
+      "supporting_evidence_ids": [
+        "inc001-m2"
+      ],
+      "contradicting_evidence_ids": [
+        "inc001-m1",
+        "inc001-l1"
+      ],
+      "next_check": "无：池等待 p95 2300ms、waiters=83、1 分钟内 172 次 PoolAcquireTimeout，且有观测到的 5xx/延迟上升。"
+    }
+  },
+  "tool_seconds": 0.010334100021282211,
+  "transport_attempts": 6,
+  "transport_attempts_complete": true,
+  "revision": 13,
+  "group_id": "handwritten-v1:connection_pool_exhaustion",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00003",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 6,
+  "scripted_demo": false,
+  "wall_seconds": 13.742815600009635,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 3458,
+    "delivered_records": 10,
+    "unique_records": 9,
+    "retrieval_calls": 9,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

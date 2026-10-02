@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "case_id": "inc003",
+  "alert": "[SYNTHETIC] 2026-09-22 14:05 UTC: checkout payment attempts began failing immediately; HTTP 5xx is 31%. Diagnose from this frozen snapshot only.",
+  "services": ["checkout", "payments", "orders-db"],
+  "records": [
+    {"id": "inc003-m1", "kind": "metric", "service": "checkout", "timestamp": "2026-09-22T14:05:00Z", "content": "Since 14:02 UTC, payment-client dns_resolution_failure_rate=100%; failed calls return in 12 ms. db_pool_in_use=18/max=100, waiters=0. Before 14:02 payment success rate=99.9%."},
+    {"id": "inc003-m2", "kind": "metric", "service": "payments", "timestamp": "2026-09-22T14:05:00Z", "content": "Direct health probe to payments.prod.svc succeeds; server p95 latency=35 ms and CPU=19%. Requests from checkout dropped to zero at 14:02 while other clients remained successful."},
+    {"id": "inc003-m3", "kind": "metric", "service": "orders-db", "timestamp": "2026-09-22T14:05:00Z", "content": "Database query_p95_ms=7, CPU=21%, locks_waiting=0; stable throughout 13:55–14:05 UTC."},
+    {"id": "inc003-l1", "kind": "log", "service": "checkout", "timestamp": "2026-09-22T14:03:20Z", "content": "ERROR trace=sample-003 payment client: getaddrinfo ENOTFOUND paymnts.prod.svc; effective PAYMENT_BASE_URL=http://paymnts.prod.svc:8080; request never reached payments server."},
+    {"id": "inc003-l2", "kind": "log", "service": "payments", "timestamp": "2026-09-22T14:03:21Z", "content": "INFO health check OK on payments.prod.svc:8080; registry entry exists for payments.prod.svc and no entry exists for paymnts.prod.svc."},
+    {"id": "inc003-c1", "kind": "change", "service": "checkout", "timestamp": "2026-09-22T14:02:00Z", "content": "Config revision checkout-config-18 applied at 14:02 UTC: PAYMENT_BASE_URL changed from http://payments.prod.svc:8080 to http://paymnts.prod.svc:8080. Application image and database pool settings unchanged."},
+    {"id": "inc003-c2", "kind": "change", "service": "payments", "timestamp": "2026-09-22T14:05:00Z", "content": "No payments deployment or service-registry change recorded in 13:00–14:05 UTC."},
+    {"id": "inc003-r1", "kind": "runbook", "service": "checkout", "content": "Configuration triage: compare effective runtime values with the last known working revision, verify DNS/service-registry names and direct dependency health. Distinguish failed name resolution from dependency timeouts. Propose a reviewed configuration correction and verify recovery after an operator applies it."},
+    {"id": "inc003-r2", "kind": "runbook", "service": "checkout", "content": "Incident triage: use exact failing hostnames and timestamps as evidence. Do not interpret successful direct probes as proof that every caller uses the same configuration."}
+  ]
+}

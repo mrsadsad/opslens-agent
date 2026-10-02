@@ -1,0 +1,233 @@
+{
+  "run_id": "8e755c493eb8490999862b2e01e020b9",
+  "case_id": "sc_c9e0ef9527c9",
+  "case_fingerprint": "93942a4207aeee549211f221067a2289e3cc83b99dae746af8e239befbc32b9f",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "definition_hash": "e023f4f1a329befecb1b76f69e5bc33693a99317d16c7cdf7addaef17d83fba0",
+  "policy": "investigator",
+  "source": "synthetic",
+  "status": "budget_exhausted",
+  "steps": 6,
+  "tool_calls": 23,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "observed": {
+    "sc_c9e0ef9527c9-service-1": {
+      "id": "sc_c9e0ef9527c9-service-1",
+      "kind": "service",
+      "service": "edge-gateway",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: edge-gateway. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_c9e0ef9527c9-service-2": {
+      "id": "sc_c9e0ef9527c9-service-2",
+      "kind": "service",
+      "service": "quote-worker",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: quote-worker. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_c9e0ef9527c9-service-3": {
+      "id": "sc_c9e0ef9527c9-service-3",
+      "kind": "service",
+      "service": "catalog-index",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: catalog-index. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_c9e0ef9527c9-service-4": {
+      "id": "sc_c9e0ef9527c9-service-4",
+      "kind": "service",
+      "service": "session-cache",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: session-cache. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "metric"
+        ],
+        "phases_by_kind": {
+          "metric": []
+        },
+        "unphased_kinds": [
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "ev_7ba6f5c2fe88": {
+      "id": "ev_7ba6f5c2fe88",
+      "kind": "metric",
+      "service": "edge-gateway",
+      "content": "One-minute buckets: 08:59 /estimate 504=0.0%, p95=82 ms; 09:01 504=9.2%, p95=1515 ms; 09:05 504=9.5%, p95=1518 ms. Request rate remains 96/s. Calls to quote-worker: deadline=1500 ms, timeouts=9.6%; client connections busy=18/max=80, acquisition p95=2 ms, waiting=0. Calls to session-cache p95=3 ms, errors=0.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_bcb0f5c74a6f": {
+      "id": "ev_bcb0f5c74a6f",
+      "kind": "metric",
+      "service": "quote-worker",
+      "content": "Window 09:01-09:10: accepted=145/s, completed=145/s, queue_wait_p95_ms=2260, handler_cpu_p95_ms=46, pending_work=318. Window 08:50-09:00: accepted=144/s, completed=144/s, queue_wait_p95_ms=4, pending_work=2. Successful database lookups p95=6 ms; connection waiters=0. Worker host scheduling samples are absent.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_9f6bcddeae7b": {
+      "id": "ev_9f6bcddeae7b",
+      "kind": "metric",
+      "service": "catalog-index",
+      "content": "09:01-09:10 outbound GetQuote timeout_rate=9.4%, versus 0.0% before 09:01. Local index search p95=5 ms, CPU=24%, inbound request rate=49/s; baseline values were 5 ms, 24%, and 48/s.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_e122a3848b32": {
+      "id": "ev_e122a3848b32",
+      "kind": "metric",
+      "service": "session-cache",
+      "content": "09:00-09:10 operation p95=2 ms, error_count=0, evictions=0, connections=21/max=1000; same values in previous 10-minute window. Scrape coverage=100%.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_442744b995d5": {
+      "id": "ev_442744b995d5",
+      "kind": "change",
+      "service": "edge-gateway",
+      "content": "gateway-73 rollout began 09:04:00 and ended 09:06:00. Artifact diff contains response footer text and static icon assets. Effective RPC endpoint, request deadline, retry count, routing table and client pool hashes are identical to gateway-72. Deployment inventory coverage is 08:30-09:10.",
+      "timestamp": "2026-10-01T09:06:00Z"
+    },
+    "ev_009179f588dc": {
+      "id": "ev_009179f588dc",
+      "kind": "change",
+      "service": "quote-worker",
+      "content": "Application image and runtime configuration checksum unchanged during 08:30-09:10. No host scheduler history or infrastructure-event inventory was captured for this interval.",
+      "timestamp": "2026-10-01T09:10:00Z"
+    },
+    "ev_78ba78138bf2": {
+      "id": "ev_78ba78138bf2",
+      "kind": "log",
+      "service": "catalog-index",
+      "content": "request_id=9bf4 build=catalog-16 unchanged_since=2026-09-29 route=/preview peer=quote-worker rpc=GetQuote elapsed_ms=1500 result=DEADLINE_EXCEEDED; inbound index lookup elapsed_ms=4. This caller uses no edge-gateway process or deployment.",
+      "timestamp": "2026-10-01T09:01:27Z",
+      "trace_id": "tr_129e8c6b"
+    },
+    "ev_31637eed0f66": {
+      "id": "ev_31637eed0f66",
+      "kind": "log",
+      "service": "quote-worker",
+      "content": "request_id=7a31 rpc=GetQuote peer=edge-gateway enqueued_at=09:01:22.890Z started_at=09:01:25.143Z completed_at=09:01:25.191Z; response_write=caller_closed; query_time_ms=5.",
+      "timestamp": "2026-10-01T09:01:25Z",
+      "trace_id": "tr_b6329ae1"
+    },
+    "ev_3eab72fe3077": {
+      "id": "ev_3eab72fe3077",
+      "kind": "log",
+      "service": "edge-gateway",
+      "content": "request_id=7a31 build=gateway-72 route=/estimate peer=quote-worker rpc=GetQuote elapsed_ms=1501 result=DEADLINE_EXCEEDED http_status=504; local_connect_wait_ms=1; session_lookup_ms=3.",
+      "timestamp": "2026-10-01T09:01:24Z",
+      "trace_id": "tr_b6329ae1"
+    }
+  },
+  "report": null,
+  "report_audit": null,
+  "usage": {
+    "prompt_tokens": 25385,
+    "completion_tokens": 3349,
+    "total_tokens": 28734
+  },
+  "usage_complete": true,
+  "model_seconds": 15.918552800052566,
+  "pending_model_request": false,
+  "hypotheses": {
+    "h2": {
+      "id": "h2",
+      "cause_code": "dependency_timeout",
+      "statement": "quote-worker 侧请求排队导致下游 GetQuote 超过 1500 ms 截止时间：queue_wait_p95 由 4 ms 升至 2260 ms、pending_work 2→318，而 handler CPU p95 仅 46 ms、DB 查询 p95 6 ms、DB connection waiters=0；日志显示 enqueue 09:01:22.890→start 09:01:25.143（排队约 2.25 s）后 caller_closed，edge-gateway 与 catalog-index 两个独立调用方同时出现 ~9.5% DEADLINE_EXCEEDED。",
+      "status": "supported",
+      "supporting_evidence_ids": [
+        "ev_bcb0f5c74a6f",
+        "ev_31637eed0f66",
+        "ev_3eab72fe3077",
+        "ev_7ba6f5c2fe88",
+        "ev_9f6bcddeae7b"
+      ],
+      "contradicting_evidence_ids": [],
+      "next_check": "核对 quote-worker 无配置变更、edge-gateway 变更仅静态资源"
+    }
+  },
+  "tool_seconds": 0.005347899976186454,
+  "transport_attempts": 6,
+  "transport_attempts_complete": true,
+  "revision": 14,
+  "group_id": "challenge-v1:e2a978804ebb",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00020",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 6,
+  "scripted_demo": false,
+  "wall_seconds": 16.336076900013722,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 5884,
+    "delivered_records": 15,
+    "unique_records": 13,
+    "retrieval_calls": 16,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

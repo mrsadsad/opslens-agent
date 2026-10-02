@@ -1,0 +1,51 @@
+{
+  "case_id": "case-29eb33d90a074bef863815dd0a54a89b",
+  "split": "dev",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "scripted_demo": false,
+  "warnings": [],
+  "run_status": "completed",
+  "completed": true,
+  "report_valid": true,
+  "report_error": null,
+  "cause_match": false,
+  "root_service_match": true,
+  "required_evidence_recall": 0.75,
+  "required_evidence_count": 4,
+  "covered_evidence_count": 3,
+  "missing_evidence_ids": [
+    "e-785d1e931ecf46948eb3d6ae3f358c11"
+  ],
+  "citation_traceability": 1.0,
+  "citation_count": 10,
+  "traceable_citation_count": 10,
+  "untraceable_evidence_ids": [],
+  "abstained": false,
+  "abstention_correct": null,
+  "evidence_group_count": 0,
+  "missing_evidence_groups": [],
+  "evidence_groups_recall": null,
+  "structural_task_success": false,
+  "numeric_audit": {
+    "version": "1.0.0",
+    "issues": [],
+    "requires_review": false
+  },
+  "numeric_audit_passed": true,
+  "numeric_rejection_count": 0,
+  "task_success": false,
+  "retrieval_calls": 6,
+  "empty_retrieval_calls": 0,
+  "unsupported_phase_calls": 0,
+  "numeric_repair_requests": 0,
+  "steps": 5,
+  "tool_calls": 10,
+  "model_seconds": 13.963637600041693,
+  "usage": {
+    "prompt_tokens": 35622,
+    "completion_tokens": 2873,
+    "total_tokens": 38495
+  },
+  "usage_complete": true,
+  "failure_category": "wrong_cause"
+}

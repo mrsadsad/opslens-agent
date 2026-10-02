@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "case_id": "inc004",
+  "alert": "[SYNTHETIC] 2026-09-23 09:10 UTC: checkout reports 6% HTTP 500 in a two-minute interval. Tracing and some client metrics were not captured. Diagnose only what this frozen snapshot supports.",
+  "services": ["checkout", "orders-db"],
+  "records": [
+    {"id": "inc004-m1", "kind": "metric", "service": "checkout", "timestamp": "2026-09-23T09:10:00Z", "content": "Window 09:08–09:10 UTC: HTTP 500 rate=6%, request rate=170/s, CPU=29%, memory=390 MiB. No endpoint breakdown, outbound RPC metrics, or pool acquisition histogram was collected for this interval."},
+    {"id": "inc004-m2", "kind": "metric", "service": "orders-db", "timestamp": "2026-09-23T09:10:00Z", "content": "Database CPU=24%, query_p95_ms=9, locks_waiting=0. Sample covers one minute only; client-side pool state is unavailable."},
+    {"id": "inc004-l1", "kind": "log", "service": "checkout", "timestamp": "2026-09-23T09:09:14Z", "content": "ERROR request failed with HTTP 500; exception details redacted by faulty logger; trace_id missing; route missing. This is the only preserved error sample."},
+    {"id": "inc004-l2", "kind": "log", "service": "checkout", "timestamp": "2026-09-23T09:09:30Z", "content": "WARN telemetry exporter unavailable since 09:00 UTC; spans and detailed request logs were dropped."},
+    {"id": "inc004-c1", "kind": "change", "service": "checkout", "timestamp": "2026-09-23T09:10:00Z", "content": "Deployment inventory last synchronized at 08:00 UTC and is stale; runtime configuration history for 08:00–09:10 UTC is unavailable. No reliable conclusion about recent changes can be drawn."},
+    {"id": "inc004-r1", "kind": "runbook", "service": "checkout", "content": "Incident triage with missing telemetry: preserve the observed symptom, distinguish unavailable data from negative evidence, list plausible hypotheses without declaring one proven, and request exception samples, outbound timings, current pool state, and change history. Avoid speculative remediation."}
+  ]
+}

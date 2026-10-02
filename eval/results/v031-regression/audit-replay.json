@@ -1,0 +1,35 @@
+{
+  "kind": "offline_developer_regression",
+  "model_calls": 0,
+  "source_files": {
+    "eval\\results\\v03\\attempts\\attempt-00001\\state.json": "69dd2dc2bd179602eae8fd27e5198d405493dd993f09648731cf99546cc3d06a",
+    "eval\\results\\v03\\attempts\\attempt-00001\\trace.jsonl": "745ab61ac7ccafc0fa218f9364ca2bdf50d3e9e632d0a50133863303082349ec",
+    "eval\\results\\v03\\attempts\\attempt-00001\\score.json": "06829267e0d872cd4eefccb152d0fe6c0780af4b146ee1d157435a39990a1dd0"
+  },
+  "audit_version": "1.0.1",
+  "audit_source_sha256": "b84d62ef05ee3fc0b42b19c0de959bd3ba83f0fde611c4d44801cb8b0f722b7c",
+  "original_rejection": {
+    "ok": false,
+    "error": {
+      "code": "report_audit_failed",
+      "issues": [
+        {
+          "code": "p95_aggregation_unverified",
+          "severity": "review",
+          "message": "论述用分量 p95 与其他耗时相加解释整体 p95；分位数通常不可直接相加。请依据同一请求的耗时求和后重新计算分位数，或明确缺少这样的证据。",
+          "evidence_ids": [
+            "inc001-m1",
+            "inc001-m2",
+            "inc001-m3"
+          ]
+        }
+      ]
+    }
+  },
+  "replayed_audit": {
+    "version": "1.0.1",
+    "issues": [],
+    "requires_review": false
+  },
+  "interpretation": "Checks only removal of known p95-negation false positive; original result and exact cause mismatch remain unchanged. Not complete report validation."
+}

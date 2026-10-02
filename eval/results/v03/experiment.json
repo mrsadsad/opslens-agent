@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "benchmark_id": "3a565c14c8c9442dac0c95747b172343",
+  "created_at": "2026-10-01T12:44:11.597386+00:00",
+  "opslens_version": "0.3.0",
+  "dataset_version": "v03-preregistered-paired",
+  "manifest_sha256": "29ac94ab8cf930b21dad7b493a3e856c1a54de2a57ddb64fe260bc7184e7f980",
+  "source_hashes": {
+    "__init__.py": "c00365a9b01343f8e32a2a4ba58c9224f5f106e96b7e3780bd2e1fe5c55b31d0",
+    "__main__.py": "9092b126ecbef1fbedd20237eab28bc52a4a910691c6d5360de4f548f5d53971",
+    "benchmark.py": "d29b5719842f4f07998424407bb4ea0754b9983f1ae38421bf53356b0a438d02",
+    "config.py": "af9c1a4b157f79b26ae29418b6156b28653e838394d0b8173e3dc23467369530",
+    "context.py": "4d87846425212ac182f4759699cc4b8169320022561dc846f6d81f629e52ad29",
+    "evaluation.py": "d7929c91ad916f643073a66305bedd103801ab52c7e0e4baeb984b71dfd87694",
+    "investigation.py": "d23698e81141c6096ca2ff58c1ed18d9994d63fcd9dc1799f7fca7bf6e73bfd8",
+    "lab.py": "3321dba2e34c52ac75a9dc9bece9c59f331fb40cae777b071420474051387595",
+    "mcp.py": "94f0477922c77c1ebb4c46483571cc450de11a6658886ce47b6f9924f4cede38",
+    "providers.py": "bcbf72fca555b3d409d1e2b2e2a176144d3daef4ad6f17b1f31779acfae8976e",
+    "report_audit.py": "ef26e42d86328074eeebdd8e77d8f190b6500b9681b8f3dfdc085e046114b8fd",
+    "retrieval.py": "0790b442b4f7edfad0bc0496d7a6ac4c7fdf8cc6d2dc078fca9056192dada596",
+    "runtime.py": "7d9a9d5242c58a54ceee55da914fa824351fda824715a6c8d84d40899551cbf7",
+    "server.py": "acd1205f23b6778c84154e2895536c068a9eb1ffe72002e0f29d364e7c3fa3d4",
+    "store.py": "f962b33665b533a0b948961e8faba40bed6fdd56a2b13bc83229d16e46ad6c1f",
+    "tools.py": "9305868417e5d45e30881ca05b4f1b0c5c9ba3b9bdfcdc29a4387eafd3d0ea71"
+  },
+  "policies": [
+    "single-shot",
+    "fixed-workflow",
+    "react",
+    "investigator"
+  ],
+  "policy_descriptions": {
+    "single-shot": "Broad deterministic collection over all discovered services, then one diagnosis call.",
+    "fixed-workflow": "Metrics/changes for all services, alert-derived literal log/runbook searches, then one diagnosis call.",
+    "react": "Model chooses tools iteratively within the same source and observation limits.",
+    "investigator": "Iterative investigation with runtime hypothesis bookkeeping; structural checks are not semantic judging."
+  },
+  "repeats": 1,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_model_calls": 112,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100
+  },
+  "max_context_chars": 48000,
+  "max_total_tokens": 60000,
+  "order": "case/repeat order; policy order rotates by case index plus repeat index",
+  "provider_contract": "One model request per complete(); built-in HTTP retries disabled.",
+  "label_boundary": "Labels used for manifest validation/scoring only; policies receive tools, never labels."
+}

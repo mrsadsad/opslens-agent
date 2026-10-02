@@ -1,0 +1,176 @@
+{
+  "run_id": "83502dfb0e354337bc2f689c44a304df",
+  "case_id": "inc001",
+  "case_fingerprint": "4c09f601dc05cef44a09b903f1b94aad4a67dabbc90a02776eff8724235d3298",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "policy": "single-shot",
+  "status": "report_rejected",
+  "steps": 1,
+  "tool_calls": 11,
+  "model_seconds": 5.041004200000316,
+  "observed": {
+    "inc001-service-1": {
+      "id": "inc001-service-1",
+      "kind": "service",
+      "service": "checkout",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: checkout. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "inc001-service-2": {
+      "id": "inc001-service-2",
+      "kind": "service",
+      "service": "orders-db",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: orders-db. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "inc001-m1": {
+      "id": "inc001-m1",
+      "kind": "metric",
+      "service": "checkout",
+      "content": "Window 10:03–10:05 UTC: db_pool_in_use=20, db_pool_max=20, pool_waiters=83, pool_acquire_wait_p95_ms=2300. Before 10:02: in_use=42, max=100, waiters=0, acquire_wait_p95_ms=4. Request rate unchanged at 240 requests/s.",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-m3": {
+      "id": "inc001-m3",
+      "kind": "metric",
+      "service": "checkout",
+      "content": "Inventory RPC p95=42 ms (baseline 41 ms); timeout_rate=0.0%; checkout process CPU=31% and memory=410 MiB (baseline 405 MiB).",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-m2": {
+      "id": "inc001-m2",
+      "kind": "metric",
+      "service": "orders-db",
+      "content": "Database CPU=23% (baseline 22%); query_p95_ms=8 (baseline 8); active_connections=20; max_connections=500; locks_waiting=0. No database-side saturation in this window.",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-l1": {
+      "id": "inc001-l1",
+      "kind": "log",
+      "service": "checkout",
+      "content": "ERROR trace=sample-001 route=/checkout PoolAcquireTimeout: unable to acquire orders-db connection within 2000 ms; in_use=20 max=20; transaction not started. Same error observed in 172 requests in the last minute.",
+      "timestamp": "2026-09-20T10:04:12Z"
+    },
+    "inc001-l2": {
+      "id": "inc001-l2",
+      "kind": "log",
+      "service": "orders-db",
+      "content": "INFO sampled queries completed in 5–9 ms; no slow-query or lock-timeout events recorded in 10:00–10:05 UTC.",
+      "timestamp": "2026-09-20T10:04:20Z"
+    },
+    "inc001-c1": {
+      "id": "inc001-c1",
+      "kind": "change",
+      "service": "checkout",
+      "content": "Deployment checkout-v42 completed at 10:02 UTC. Effective runtime configuration diff: DB_POOL_MAX 100 -> 20. DB_POOL_ACQUIRE_TIMEOUT_MS remains 2000. Error increase begins at 10:03 UTC.",
+      "timestamp": "2026-09-20T10:02:00Z"
+    },
+    "inc001-c2": {
+      "id": "inc001-c2",
+      "kind": "change",
+      "service": "orders-db",
+      "content": "Change inventory covers 09:00–10:05 UTC: no database deployment, schema migration, or connection-limit change recorded.",
+      "timestamp": "2026-09-20T10:05:00Z"
+    },
+    "inc001-r1": {
+      "id": "inc001-r1",
+      "kind": "runbook",
+      "service": "checkout",
+      "content": "Connection pool triage: compare in-use connections with the effective pool maximum and waiting requests; distinguish client acquisition timeouts from slow queries. Check rollout configuration diffs and database CPU/locks. A proposed pool-limit restoration requires owner approval and database capacity review; this tool cannot execute it."
+    },
+    "inc001-r2": {
+      "id": "inc001-r2",
+      "kind": "runbook",
+      "service": "checkout",
+      "content": "Incident triage: establish the failing path with metrics and logs, seek evidence contradicting the leading hypothesis, and verify timing before attributing a fault to a recent deployment. State uncertainty when the snapshot cannot establish a cause."
+    }
+  },
+  "report": null,
+  "pending_model_request": false,
+  "usage": {
+    "prompt_tokens": 2402,
+    "completion_tokens": 998,
+    "total_tokens": 3400
+  },
+  "usage_complete": true,
+  "max_steps": 1,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "source": "synthetic",
+  "revision": 3,
+  "transport_attempts": 1,
+  "report_audit": {
+    "version": "1.0.0",
+    "issues": [
+      {
+        "code": "p95_aggregation_unverified",
+        "severity": "review",
+        "message": "论述用分量 p95 与其他耗时相加解释整体 p95；分位数通常不可直接相加。请依据同一请求的耗时求和后重新计算分位数，或明确缺少这样的证据。",
+        "evidence_ids": [
+          "inc001-m1",
+          "inc001-m2",
+          "inc001-m3"
+        ]
+      }
+    ],
+    "requires_review": true
+  },
+  "group_id": "handwritten-v1:connection_pool_exhaustion",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00001",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 1,
+  "scripted_demo": false,
+  "wall_seconds": 5.096187100018142,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 3645,
+    "delivered_records": 11,
+    "unique_records": 11,
+    "retrieval_calls": 10,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

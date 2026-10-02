@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "dataset_version": "v03-smoke",
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100
+  },
+  "cases": [
+    {
+      "case_id": "inc001",
+      "group_id": "handwritten-v1:connection_pool_exhaustion",
+      "sha256": "4c09f601dc05cef44a09b903f1b94aad4a67dabbc90a02776eff8724235d3298",
+      "label": {
+        "cause_code": "connection_pool_exhaustion",
+        "root_service": "checkout",
+        "required_evidence": [
+          "inc001-m1",
+          "inc001-l1",
+          "inc001-c1"
+        ],
+        "split": "dev"
+      },
+      "source_kind": "synthetic",
+      "source": "synthetic",
+      "path": "cases/case-0001.json"
+    }
+  ]
+}

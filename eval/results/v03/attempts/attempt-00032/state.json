@@ -1,0 +1,151 @@
+{
+  "run_id": "c2618d3ed6e8418698b41fea61e3fc13",
+  "case_id": "sc_a7da59a02d8b",
+  "case_fingerprint": "0941fb2a140b063cf5b2c4b8a3b6212f4a3072e7f7d853db57903acdaaaff329",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "definition_hash": "a8559cc34180a493c0b8d00fdcc1090e921a95aa28bb7fc7803c2659117ba2dc",
+  "policy": "react",
+  "source": "synthetic",
+  "status": "provider_error",
+  "steps": 2,
+  "tool_calls": 1,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "observed": {
+    "sc_a7da59a02d8b-service-1": {
+      "id": "sc_a7da59a02d8b-service-1",
+      "kind": "service",
+      "service": "search-edge",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: search-edge. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [],
+          "log": [],
+          "metric": [],
+          "runbook": []
+        },
+        "unphased_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_a7da59a02d8b-service-2": {
+      "id": "sc_a7da59a02d8b-service-2",
+      "kind": "service",
+      "service": "rank-api",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: rank-api. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "sc_a7da59a02d8b-service-3": {
+      "id": "sc_a7da59a02d8b-service-3",
+      "kind": "service",
+      "service": "document-store",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: document-store. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": []
+      }
+    },
+    "sc_a7da59a02d8b-service-4": {
+      "id": "sc_a7da59a02d8b-service-4",
+      "kind": "service",
+      "service": "feature-cache",
+      "source": "synthetic",
+      "content": "Synthetic frozen snapshot service: feature-cache. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [],
+          "metric": []
+        },
+        "unphased_kinds": [
+          "log",
+          "metric"
+        ],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    }
+  },
+  "report": null,
+  "report_audit": null,
+  "usage": {
+    "prompt_tokens": 1829,
+    "completion_tokens": 17,
+    "total_tokens": 1846
+  },
+  "usage_complete": false,
+  "model_seconds": 2.381955899967579,
+  "pending_model_request": false,
+  "hypotheses": {},
+  "tool_seconds": 0.0007845000072848052,
+  "transport_attempts": 2,
+  "transport_attempts_complete": true,
+  "revision": 5,
+  "group_id": "challenge-v1:e03284d489ad",
+  "repeat": 1,
+  "source_kind": "synthetic",
+  "attempt_id": "attempt-00032",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 2,
+  "scripted_demo": false,
+  "wall_seconds": 2.5931238000048324,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 2098,
+    "delivered_records": 4,
+    "unique_records": 4,
+    "retrieval_calls": 1,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

@@ -1,0 +1,325 @@
+{
+  "run_id": "551567407b8448baabc521ef9c1408c1",
+  "case_id": "case-29eb33d90a074bef863815dd0a54a89b",
+  "case_fingerprint": "28397744284d3101c6e711d6c071ff602f6dcaec4deded959137f113a69fe164",
+  "provider": "deepseek:deepseek-flash@https://api.deepseek.com;thinking=disabled;max_tokens=4096",
+  "definition_hash": "e023f4f1a329befecb1b76f69e5bc33693a99317d16c7cdf7addaef17d83fba0",
+  "policy": "investigator",
+  "source": "local_fault_lab",
+  "status": "completed",
+  "steps": 5,
+  "tool_calls": 10,
+  "max_steps": 6,
+  "max_tool_calls": 32,
+  "max_total_tokens": 60000,
+  "max_context_chars": 48000,
+  "observed": {
+    "case-29eb33d90a074bef863815dd0a54a89b-service-1": {
+      "id": "case-29eb33d90a074bef863815dd0a54a89b-service-1",
+      "kind": "service",
+      "service": "svc-ac0a5d8f79",
+      "source": "local_fault_lab",
+      "content": "Measured local HTTP fault-lab snapshot service: svc-ac0a5d8f79. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "change",
+          "log",
+          "metric",
+          "runbook"
+        ],
+        "phases_by_kind": {
+          "change": [
+            "fault",
+            "recovery"
+          ],
+          "log": [
+            "baseline",
+            "fault",
+            "recovery"
+          ],
+          "metric": [
+            "baseline",
+            "fault",
+            "recovery"
+          ],
+          "runbook": []
+        },
+        "unphased_kinds": [],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "case-29eb33d90a074bef863815dd0a54a89b-service-2": {
+      "id": "case-29eb33d90a074bef863815dd0a54a89b-service-2",
+      "kind": "service",
+      "service": "svc-a7adb501af",
+      "source": "local_fault_lab",
+      "content": "Measured local HTTP fault-lab snapshot service: svc-a7adb501af. The attached capabilities describe available fields, not service health. Use only phases listed for the requested record kind; otherwise omit phase. trace_kinds lists record kinds with explicit trace IDs.",
+      "capabilities": {
+        "available_kinds": [
+          "log",
+          "metric"
+        ],
+        "phases_by_kind": {
+          "log": [
+            "baseline",
+            "fault",
+            "recovery"
+          ],
+          "metric": [
+            "baseline",
+            "fault",
+            "recovery"
+          ]
+        },
+        "unphased_kinds": [],
+        "trace_kinds": [
+          "log"
+        ]
+      }
+    },
+    "e-011a882a60a84d1189ae636c7787cc4a": {
+      "id": "e-011a882a60a84d1189ae636c7787cc4a",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_ms\": 48.906, \"component\": \"checkout\", \"error_code\": \"pool_acquire_timeout\", \"event\": \"http_request\", \"latency_ms\": 49.673, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"fault\", \"pool_in_use\": 1, \"pool_max\": 1, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 7, \"pool_waiters\": 6, \"request_id\": \"req-5d144103c9544cc9b513cb273444f051\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 503, \"timestamp\": \"2026-10-01T12:37:03.818+00:00\", \"trace_id\": \"trace-2e9a2c6927594f9aaff3f7fb3854aabf\"}",
+      "timestamp": "2026-10-01T12:37:03.818+00:00",
+      "phase": "fault",
+      "trace_id": "trace-2e9a2c6927594f9aaff3f7fb3854aabf",
+      "request_id": "req-5d144103c9544cc9b513cb273444f051"
+    },
+    "e-985f10b5aca64f18b55d9b89767671ae": {
+      "id": "e-985f10b5aca64f18b55d9b89767671ae",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_ms\": 48.714, \"component\": \"checkout\", \"error_code\": \"pool_acquire_timeout\", \"event\": \"http_request\", \"latency_ms\": 49.569, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"fault\", \"pool_in_use\": 1, \"pool_max\": 1, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 7, \"pool_waiters\": 5, \"request_id\": \"req-48f935617e924ff89596c37dec9d7b7e\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 503, \"timestamp\": \"2026-10-01T12:37:03.820+00:00\", \"trace_id\": \"trace-0ec7e86aede44da4917e7a8a0400af5a\"}",
+      "timestamp": "2026-10-01T12:37:03.820+00:00",
+      "phase": "fault",
+      "trace_id": "trace-0ec7e86aede44da4917e7a8a0400af5a",
+      "request_id": "req-48f935617e924ff89596c37dec9d7b7e"
+    },
+    "e-e60a96d1d9674f7b8a063f2271bbe75d": {
+      "id": "e-e60a96d1d9674f7b8a063f2271bbe75d",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_ms\": 0.004, \"component\": \"checkout\", \"dependency_latency_ms\": 62.291, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 62.499, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"baseline\", \"pool_in_use\": 1, \"pool_max\": 8, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-3b062eb823a743c5b8b6e903ec314012\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.604+00:00\", \"trace_id\": \"trace-4bafc21b054649d5bd24d036aec74ca7\"}",
+      "timestamp": "2026-10-01T12:37:03.604+00:00",
+      "phase": "baseline",
+      "trace_id": "trace-4bafc21b054649d5bd24d036aec74ca7",
+      "request_id": "req-3b062eb823a743c5b8b6e903ec314012"
+    },
+    "e-9cdb9580f4ef4e258d88c3643c04abba": {
+      "id": "e-9cdb9580f4ef4e258d88c3643c04abba",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_ms\": 0.004, \"component\": \"checkout\", \"dependency_latency_ms\": 62.115, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 62.514, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"baseline\", \"pool_in_use\": 2, \"pool_max\": 8, \"pool_peak_in_use\": 2, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-aca3f77b4fd645bb925ea8dadc784a2d\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:03.605+00:00\", \"trace_id\": \"trace-a2b4a951b6a44198893bc96e7f53df6b\"}",
+      "timestamp": "2026-10-01T12:37:03.605+00:00",
+      "phase": "baseline",
+      "trace_id": "trace-a2b4a951b6a44198893bc96e7f53df6b",
+      "request_id": "req-aca3f77b4fd645bb925ea8dadc784a2d"
+    },
+    "e-045783dd30104692bc621a118c980603": {
+      "id": "e-045783dd30104692bc621a118c980603",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_ms\": 0.009, \"component\": \"checkout\", \"dependency_latency_ms\": 62.522, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 62.801, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"recovery\", \"pool_in_use\": 1, \"pool_max\": 8, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-d1e562c029d140468fd31b0e20f3a490\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:04.089+00:00\", \"trace_id\": \"trace-ae1e3a9d0428449cad48d98723a431b7\"}",
+      "timestamp": "2026-10-01T12:37:04.089+00:00",
+      "phase": "recovery",
+      "trace_id": "trace-ae1e3a9d0428449cad48d98723a431b7",
+      "request_id": "req-d1e562c029d140468fd31b0e20f3a490"
+    },
+    "e-c2ed6578839d442b9f7db40b4cc1bd12": {
+      "id": "e-c2ed6578839d442b9f7db40b4cc1bd12",
+      "kind": "log",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_ms\": 0.003, \"component\": \"checkout\", \"dependency_latency_ms\": 62.207, \"dependency_path\": \"/work\", \"dependency_status\": 200, \"error_code\": null, \"event\": \"http_request\", \"latency_ms\": 63.412, \"method\": \"GET\", \"path\": \"/checkout\", \"phase\": \"recovery\", \"pool_in_use\": 3, \"pool_max\": 8, \"pool_peak_in_use\": 3, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"request_id\": \"req-d7c6d4e1dc5f4657ab8a8664d9db43ea\", \"response_delivered\": true, \"service\": \"svc-ac0a5d8f79\", \"status\": 200, \"timestamp\": \"2026-10-01T12:37:04.090+00:00\", \"trace_id\": \"trace-cd1b99b475034fecb7a3e469103bbfc0\"}",
+      "timestamp": "2026-10-01T12:37:04.090+00:00",
+      "phase": "recovery",
+      "trace_id": "trace-cd1b99b475034fecb7a3e469103bbfc0",
+      "request_id": "req-d7c6d4e1dc5f4657ab8a8664d9db43ea"
+    },
+    "e-d0632b628831463780194da136f5d98d": {
+      "id": "e-d0632b628831463780194da136f5d98d",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"component\": \"load_client\", \"error_counts\": {\"pool_acquire_timeout\": 20}, \"error_rate\": 0.833333, \"errors\": 20, \"latency_p50_ms\": 60.899, \"latency_p95_ms\": 124.726, \"phase\": \"fault\", \"requests\": 24, \"status_counts\": {\"200\": 4, \"503\": 20}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "fault"
+    },
+    "e-ff4d925416804c1b9ae5ec0cff88d3bb": {
+      "id": "e-ff4d925416804c1b9ae5ec0cff88d3bb",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_p95_ms\": 58.103, \"component\": \"checkout\", \"error_counts\": {\"pool_acquire_timeout\": 20}, \"error_rate\": 0.833333, \"errors\": 20, \"latency_p50_ms\": 56.191, \"latency_p95_ms\": 100.95, \"outbound_latency_p95_ms\": 78.594, \"phase\": \"fault\", \"pool_in_use\": 0, \"pool_max\": 1, \"pool_peak_in_use\": 1, \"pool_peak_waiters\": 7, \"pool_waiters\": 0, \"requests\": 24, \"status_counts\": {\"200\": 4, \"503\": 20}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "fault"
+    },
+    "e-8fafdae3cd0b4720bf94ded3dd925567": {
+      "id": "e-8fafdae3cd0b4720bf94ded3dd925567",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"component\": \"load_client\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 64.863, \"latency_p95_ms\": 67.953, \"phase\": \"baseline\", \"requests\": 24, \"status_counts\": {\"200\": 24}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "baseline"
+    },
+    "e-441fdeecd17f4b67ac519fb41543ec8b": {
+      "id": "e-441fdeecd17f4b67ac519fb41543ec8b",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_p95_ms\": 0.004, \"component\": \"checkout\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 62.631, \"latency_p95_ms\": 64.535, \"outbound_latency_p95_ms\": 63.641, \"phase\": \"baseline\", \"pool_in_use\": 0, \"pool_max\": 8, \"pool_peak_in_use\": 8, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"requests\": 24, \"status_counts\": {\"200\": 24}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "baseline"
+    },
+    "e-785d1e931ecf46948eb3d6ae3f358c11": {
+      "id": "e-785d1e931ecf46948eb3d6ae3f358c11",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"component\": \"load_client\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 67.167, \"latency_p95_ms\": 90.925, \"phase\": \"recovery\", \"requests\": 24, \"status_counts\": {\"200\": 24}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "recovery"
+    },
+    "e-21e117bc356542508e9dcaa4dab3bc5c": {
+      "id": "e-21e117bc356542508e9dcaa4dab3bc5c",
+      "kind": "metric",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"acquire_wait_p95_ms\": 0.009, \"component\": \"checkout\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 63.233, \"latency_p95_ms\": 76.558, \"outbound_latency_p95_ms\": 76.071, \"phase\": \"recovery\", \"pool_in_use\": 0, \"pool_max\": 8, \"pool_peak_in_use\": 8, \"pool_peak_waiters\": 1, \"pool_waiters\": 0, \"requests\": 24, \"status_counts\": {\"200\": 24}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "recovery"
+    },
+    "e-ee5880eae47e4ad59a2d3791de007842": {
+      "id": "e-ee5880eae47e4ad59a2d3791de007842",
+      "kind": "change",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"differences\": {\"pool_max\": {\"after\": 1, \"before\": 8}}, \"event\": \"effective_configuration_change\", \"phase\": \"fault\", \"service\": \"svc-ac0a5d8f79\", \"timestamp\": \"2026-10-01T12:37:03.816+00:00\"}",
+      "timestamp": "2026-10-01T12:37:03.816+00:00",
+      "phase": "fault"
+    },
+    "e-6e81638ca8554cbd8710baadeb0b6002": {
+      "id": "e-6e81638ca8554cbd8710baadeb0b6002",
+      "kind": "change",
+      "service": "svc-ac0a5d8f79",
+      "content": "{\"differences\": {\"pool_max\": {\"after\": 8, \"before\": 1}}, \"event\": \"effective_configuration_change\", \"phase\": \"recovery\", \"service\": \"svc-ac0a5d8f79\", \"timestamp\": \"2026-10-01T12:37:04.086+00:00\"}",
+      "timestamp": "2026-10-01T12:37:04.086+00:00",
+      "phase": "recovery"
+    },
+    "e-c3202c98e06b41aaa88e919c0d28d802": {
+      "id": "e-c3202c98e06b41aaa88e919c0d28d802",
+      "kind": "metric",
+      "service": "svc-a7adb501af",
+      "content": "{\"component\": \"dependency\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 60.563, \"latency_p95_ms\": 61.164, \"phase\": \"fault\", \"requests\": 4, \"status_counts\": {\"200\": 4}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "fault"
+    },
+    "e-66234c7d6a5f48f7836d6781017306dd": {
+      "id": "e-66234c7d6a5f48f7836d6781017306dd",
+      "kind": "metric",
+      "service": "svc-a7adb501af",
+      "content": "{\"component\": \"dependency\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 60.663, \"latency_p95_ms\": 61.489, \"phase\": \"baseline\", \"requests\": 24, \"status_counts\": {\"200\": 24}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "baseline"
+    },
+    "e-662880ca008a4d42bdc91f270ec318fc": {
+      "id": "e-662880ca008a4d42bdc91f270ec318fc",
+      "kind": "metric",
+      "service": "svc-a7adb501af",
+      "content": "{\"component\": \"dependency\", \"error_counts\": {}, \"error_rate\": 0.0, \"errors\": 0, \"latency_p50_ms\": 60.603, \"latency_p95_ms\": 62.499, \"phase\": \"recovery\", \"requests\": 24, \"status_counts\": {\"200\": 24}}",
+      "timestamp": "2026-10-01T12:37:04.340+00:00",
+      "phase": "recovery"
+    }
+  },
+  "report": {
+    "status": "diagnosed",
+    "cause_code": "bad_configuration",
+    "root_cause": "svc-ac0a5d8f79（checkout 组件）连接池上限被误配为 1（应为 8）",
+    "root_service": "svc-ac0a5d8f79",
+    "evidence_ids": [
+      "e-ee5880eae47e4ad59a2d3791de007842",
+      "e-6e81638ca8554cbd8710baadeb0b6002",
+      "e-011a882a60a84d1189ae636c7787cc4a",
+      "e-985f10b5aca64f18b55d9b89767671ae",
+      "e-ff4d925416804c1b9ae5ec0cff88d3bb",
+      "e-8fafdae3cd0b4720bf94ded3dd925567",
+      "e-21e117bc356542508e9dcaa4dab3bc5c",
+      "e-e60a96d1d9674f7b8a063f2271bbe75d",
+      "e-c3202c98e06b41aaa88e919c0d28d802",
+      "e-66234c7d6a5f48f7836d6781017306dd"
+    ],
+    "explanation": "观测事实（本地故障实验快照，非生产数据）：svc-ac0a5d8f79 在 fault 阶段出现 24 个请求中 20 个非 2xx（error_rate 0.833333，status_counts 200:4 / 503:20），错误码全部为 pool_acquire_timeout（e-d0632b628831463780194da136f5d98d、e-ff4d925416804c1b9ae5ec0cff88d3bb）。checkout 组件的连接池参数在 fault 阶段为 pool_max=1、pool_peak_waiters=7、pool_peak_in_use=1，acquire_wait_p95_ms 从基线的 0.004 升至 58.103（e-441fdeecd17f4b67ac519fb41543ec8b → e-ff4d925416804c1b9ae5ec0cff88d3bb）；日志样本显示 pool_waiters=5~6、acquire_wait_ms≈48.7~48.9、响应 503（e-011a882a60a84d1189ae636c7787cc4a、e-985f10b5aca64f18b55d9b89767671ae）。变更记录显示 12:37:03.816 生效配置把 pool_max 由 8 改为 1（e-ee5880eae47e4ad59a2d3791de007842），12:37:04.086 又由 1 改回 8（e-6e81638ca8554cbd8710baadeb0b6002）；时间上 503 日志（12:37:03.818、12:37:03.820）紧随第一次变更之后。恢复阶段 pool_max=8，error_rate=0.0、24/24 为 200、acquire_wait_p95=0.009ms，且恢复样本日志（e-045783dd30104692bc621a118c980603、e-c2ed6578839d442b9f7db40b4cc1bd12）与基线样本（e-e60a96d1d9674f7b8a063f2271bbe75d）均为 200。推断：并发放大下 pool_max=1 让每次请求最多只能独占一个连接，其余请求排队等待连接，超过获取阈值后抛 pool_acquire_timeout 并返回 503——这是配置错误（容量参数被误设），而非下游故障或自然连接泄漏。竞争解释已被排除：下游 /work（svc-a7adb501af）在 fault 阶段 error_rate=0.0、4/4 成功、p95 61.164ms，与基线 p95 61.489ms、恢复 62.499ms 基本一致（e-c3202c98e06b41aaa88e919c0d28d802、e-66234c7d6a5f48f7836d6781017306dd、e-662880ca008a4d42bdc91f270ec318fc），因此不成立 dependency_timeout；失败请求的 latency 也在本地排队耗时段内完成（池超时≈49~100ms），无下游超时痕迹。注意范围差异：故障阶段下游样本量仅 4 个请求（其余 20 个请求在上游排队失败、未到达下游），故下游无错误不能单独证明依赖永远健康，但结合其 p95 与基线一致，足以排除本次 503 的依赖超时归因。未执行任何修复动作；pool_max 在快照中已由变更记录恢复为 8，但应由人核对配置来源与变更审批。",
+    "next_steps": [
+      "人工核对 pool_max 配置来源（是哪条配置/发布把 checkout 连接池上限设为 1），补齐变更审批与配置审计记录，并确认当前生效值为 8",
+      "由人评审连接池容量（pool_max、获取超时阈值）与并发负载的匹配，验证 pool_max>=预期并发或引入排队熔断/背压机制",
+      "增加 pool_peak_waiters / acquire_wait_p95_ms / pool_acquire_timeout 指标告警，以便在池上限被误改时及早发现",
+      "在受控环境重复一次该配置实验（仅观察，不执行修复），确认 pool_max=1 可复现 503 与 acquire 等待升高，pool_max=8 时恢复，以强化因果链"
+    ]
+  },
+  "report_audit": {
+    "version": "1.0.0",
+    "issues": [],
+    "requires_review": false
+  },
+  "usage": {
+    "prompt_tokens": 35622,
+    "completion_tokens": 2873,
+    "total_tokens": 38495
+  },
+  "usage_complete": true,
+  "model_seconds": 13.963637600041693,
+  "pending_model_request": false,
+  "hypotheses": {
+    "h1": {
+      "id": "h1",
+      "cause_code": "bad_configuration",
+      "statement": "svc-ac0a5d8f79 的 checkout 连接池在 fault 阶段被误配置为 pool_max=1（基线/恢复为 8），导致并发请求排队等待连接，acquire_wait 从 0.004ms 升至 p95 58.1ms，24 请求中 20 个以 503 pool_acquire_timeout 失败（error_rate 0.8333）；恢复阶段 pool_max 回到 8 后错误清零。因果链需由 change 记录时间戳（12:37:03.816 配置变更 → 12:37:03.818/12:37:03.820 首个 503 → 12:37:04.086 回滚 → 12:37:04.089/12:37:04.090 恢复 200）与日志/指标共同印证。",
+      "supporting_evidence_ids": [
+        "e-ee5880eae47e4ad59a2d3791de007842",
+        "e-6e81638ca8554cbd8710baadeb0b6002",
+        "e-011a882a60a84d1189ae636c7787cc4a",
+        "e-985f10b5aca64f18b55d9b89767671ae",
+        "e-ff4d925416804c1b9ae5ec0cff88d3bb",
+        "e-8fafdae3cd0b4720bf94ded3dd925567",
+        "e-21e117bc356542508e9dcaa4dab3bc5c",
+        "e-e60a96d1d9674f7b8a063f2271bbe75d"
+      ],
+      "contradicting_evidence_ids": [],
+      "status": "supported",
+      "next_check": "检查 svc-a7adb501af（下游 /work 依赖）在 fault 阶段是否同时出现延迟/错误上升，以排除 dependency_timeout；并核对 checkout 的 outbound_latency_p95_ms 在 fault 阶段是否保持正常。"
+    },
+    "h2": {
+      "cause_code": "dependency_timeout",
+      "contradicting_evidence_ids": [
+        "e-c3202c98e06b41aaa88e919c0d28d802",
+        "e-66234c7d6a5f48f7836d6781017306dd",
+        "e-662880ca008a4d42bdc91f270ec318fc",
+        "e-ff4d925416804c1b9ae5ec0cff88d3bb"
+      ],
+      "id": "h2",
+      "next_check": "无：下游在 fault 阶段 4/4 请求均 200、p95 61.2ms，与基线 61.5ms 基本一致，依赖超时解释被排除。",
+      "statement": "替代解释：503 由下游依赖 /work（svc-a7adb501af）变慢或超时导致 checkout 失败。已被排除：该下游 fault 阶段 error_rate=0.0、4/4 200、latency_p95 61.164ms，与基线 61.489ms、恢复 62.499ms 无异；checkout 自身 outbound_latency_p95 为 78.594ms 且无下游错误码，错误码是本地 pool_acquire_timeout。",
+      "status": "ruled_out",
+      "supporting_evidence_ids": []
+    }
+  },
+  "tool_seconds": 0.008423599996604025,
+  "transport_attempts": 5,
+  "transport_attempts_complete": true,
+  "revision": 11,
+  "group_id": "local-http-v1:pool_exhaustion",
+  "repeat": 1,
+  "source_kind": "live_capture",
+  "attempt_id": "attempt-00010",
+  "attempted": true,
+  "invalid_reason": null,
+  "model_calls": 5,
+  "scripted_demo": false,
+  "wall_seconds": 14.123874499986414,
+  "observation_budget": {
+    "max_chars": 24000,
+    "max_records": 100,
+    "delivered_chars": 13087,
+    "delivered_records": 21,
+    "unique_records": 19,
+    "retrieval_calls": 6,
+    "counting": "canonical JSON record characters; duplicates count again"
+  }
+}

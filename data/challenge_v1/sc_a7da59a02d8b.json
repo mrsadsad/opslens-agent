@@ -1,0 +1,87 @@
+{
+  "synthetic": true,
+  "source": "independent_synthetic_challenge_v1",
+  "case_id": "sc_a7da59a02d8b",
+  "alert": "[SYNTHETIC] Frozen window 2026-10-01 12:55-13:05 UTC: review the /search serving path after an on-call verification request. Use observed outcomes and coverage to assess the window.",
+  "services": [
+    "search-edge",
+    "rank-api",
+    "document-store",
+    "feature-cache"
+  ],
+  "records": [
+    {
+      "id": "ev_6933ff7a677c",
+      "kind": "metric",
+      "service": "search-edge",
+      "timestamp": "2026-10-01T13:05:00Z",
+      "content": "All ten one-minute buckets 12:55-13:05 are present: /search accepted=120/s, HTTP 2xx=100%, HTTP 4xx=0, HTTP 5xx=0, p95 latency range=71-76 ms, p99=91-96 ms; previous ten-minute p95 range=70-77 ms. rank-api timeout_count=0; client connection waiters=0 and acquisition p95=1 ms."
+    },
+    {
+      "id": "ev_b7878388cd43",
+      "kind": "metric",
+      "service": "rank-api",
+      "timestamp": "2026-10-01T13:05:00Z",
+      "content": "All one-minute buckets captured: request_success=100%, total_requests=72000, work_queue_p95=1, handler_p95_ms=65; document-store p95=6 ms and deadline_count=0; feature-cache p95=2 ms and deadline_count=0. Database client connections in_use_p95=17/max=80, acquisition_waiters=0. Baseline values remain within 5% of this window."
+    },
+    {
+      "id": "ev_a2016e570b55",
+      "kind": "change",
+      "service": "search-edge",
+      "timestamp": "2026-10-01T13:00:00Z",
+      "content": "At 13:00 a documentation-link label was changed in the status page asset bundle. Serving binary hash, route table, dependency endpoints, request deadlines and pool limits stayed identical. Access-log audit before and after 13:00 retained 100% success."
+    },
+    {
+      "id": "ev_a490ca1834e3",
+      "kind": "log",
+      "service": "search-edge",
+      "timestamp": "2026-10-01T13:01:42Z",
+      "content": "request_id=5d9c route=/search accepted_at=13:01:42.100Z response_at=13:01:42.174Z status=200; peer=rank-api status=OK span_ms=68; client_connection_wait_ms=1. End-of-window access-log audit: accepted=72000, completed=72000, non_2xx=0; audit covers every request in 12:55-13:05.",
+      "trace_id": "tr_d37a50c8"
+    },
+    {
+      "id": "ev_b64465071ea0",
+      "kind": "log",
+      "service": "feature-cache",
+      "timestamp": "2026-10-01T13:01:42Z",
+      "content": "request_id=5d9c operation=GET accepted_at=13:01:42.107Z completed_at=13:01:42.109Z result=HIT; same trace has no retry records; request and response counts reconciled.",
+      "trace_id": "tr_d37a50c8"
+    },
+    {
+      "id": "ev_b833088e1e54",
+      "kind": "log",
+      "service": "rank-api",
+      "timestamp": "2026-10-01T13:01:42Z",
+      "content": "request_id=5d9c received_at=13:01:42.102Z completed_at=13:01:42.170Z status=OK; document-store SELECT elapsed_ms=6 result=OK; feature-cache GET elapsed_ms=2 result=OK; queue_wait_ms=1; rank_compute_ms=57.",
+      "trace_id": "tr_d37a50c8"
+    },
+    {
+      "id": "ev_9c682b363bab",
+      "kind": "metric",
+      "service": "feature-cache",
+      "timestamp": "2026-10-01T13:05:00Z",
+      "content": "12:55-13:05 samples complete: operation_success=100%, p95=2 ms, evictions=0, timeout_count=0, CPU=12%; baseline p95=2 ms, CPU=13%. Client reconnect_count=0."
+    },
+    {
+      "id": "ev_55ba96e0af0d",
+      "kind": "metric",
+      "service": "document-store",
+      "timestamp": "2026-10-01T13:05:00Z",
+      "content": "12:55-13:05 scrape coverage=100%; query_success=100%, query_p95_ms=6, CPU=19%, active_connections_p95=17/max=500, lock_waiters=0. All accepting listener probes passed. Baseline query p95=6 ms and CPU=20%."
+    },
+    {
+      "id": "ev_f0749e609f59",
+      "kind": "log",
+      "service": "document-store",
+      "timestamp": "2026-10-01T13:05:00Z",
+      "content": "Window audit 12:55-13:05: sessions accepted=72000, completed=72000, transaction_errors=0, lock_timeouts=0; max_query_ms=14; active listener unchanged. Probe audit success=600 of 600 probes."
+    },
+    {
+      "id": "ev_2393c4827dc6",
+      "kind": "runbook",
+      "service": "search-edge",
+      "timestamp": "2026-10-01T13:05:00Z",
+      "content": "During a verification, compare complete-window request outcomes, tail latency and dependency observations against the baseline. Explicitly separate observed normal outcomes from a lack of samples. Avoid proposing operational changes solely because a revision appears in the inventory."
+    }
+  ]
+}
