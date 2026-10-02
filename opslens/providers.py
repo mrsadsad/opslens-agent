@@ -18,6 +18,8 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+from .json_utils import strict_loads
+
 
 MAX_RESPONSE_BYTES = 1_048_576
 MAX_ATTEMPTS = 5
@@ -198,7 +200,7 @@ class ChatProvider:
                 if len(raw) > MAX_RESPONSE_BYTES:
                     raise ProviderError("response_too_large")
                 try:
-                    payload = json.loads(raw)
+                    payload = strict_loads(raw)
                 except (ValueError, UnicodeError, RecursionError):
                     raise ProviderError("invalid_json") from None
                 validated = _validate_response(payload)

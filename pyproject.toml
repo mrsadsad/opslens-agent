@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opslens-agent"
-version = "0.3.1"
+version = "0.4.0"
 description = "Evidence-grounded incident investigation agent and evaluation lab"
 requires-python = ">=3.11"
 dependencies = []
@@ -16,4 +16,4 @@ opslens = "opslens.__main__:main"
 include = ["opslens*"]
 
 [tool.setuptools.package-data]
-opslens = ["web/*.html"]
+opslens = ["web/*.html", "fixtures/*.json"]

@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from .store import RunStore
 from .providers import ProviderError
 from .context import build_context
+from .json_utils import strict_loads
+from .pagination import bound_result
 from .report_audit import AUDIT_VERSION, AUDIT_SOURCE_SHA256, audit_report
 from .investigation import CAUSES, HYPOTHESIS_SCHEMA, INSTRUCTIONS, record_hypothesis, diagnosis_gate
 
@@ -118,18 +120,8 @@ def _event(state: dict, kind: str, **details):
 
 
 def _bounded_result(result: dict, max_chars: int = 12000) -> dict:
-    """Truncate at record boundaries so every observed ID has visible content."""
-    if not result.get("ok"):
-        return result
-    bounded = {key: value for key, value in result.items() if key != "records"}
-    bounded["records"] = []
-    for record in result.get("records", []):
-        trial = {**bounded, "records": [*bounded["records"], record]}
-        if len(json.dumps(trial, ensure_ascii=False)) > max_chars:
-            bounded["truncated"] = True
-            break
-        bounded = trial
-    return bounded
+    """Deliver complete records and continue after the prefix actually seen."""
+    return bound_result(result, max_chars)
 
 
 class AgentRuntime:
@@ -268,7 +260,7 @@ class AgentRuntime:
                 else:
                     state["tool_calls"] += 1
                     try:
-                        arguments = json.loads(call["function"]["arguments"])
+                        arguments = strict_loads(call["function"]["arguments"])
                         if not isinstance(arguments, dict):
                             raise ValueError("arguments must be an object")
                     except (ValueError, TypeError, RecursionError):

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from opslens.__main__ import _provider
+from opslens.__main__ import DEFAULT_CASE, _provider
 from opslens.providers import ChatProvider, DeepSeekProvider
 
 
@@ -17,6 +17,20 @@ class CliTests(unittest.TestCase):
         loader = patch("opslens.__main__.load_local_env")
         loader.start()
         self.addCleanup(loader.stop)
+
+    def test_bundled_demo_runs_outside_the_source_directory(self):
+        root = Path(__file__).resolve().parents[1]
+        self.assertEqual(DEFAULT_CASE.read_bytes(), (root / "data/cases/inc001.json").read_bytes())
+        with tempfile.TemporaryDirectory() as directory:
+            process = subprocess.run(
+                [sys.executable, "-m", "opslens", "demo"], cwd=directory,
+                text=True, encoding="utf-8", capture_output=True, timeout=15,
+                env={**os.environ, "PYTHONPATH": str(root), "PYTHONIOENCODING": "utf-8"},
+            )
+            self.assertEqual(process.returncode, 0, process.stderr)
+            result = json.loads(process.stdout)
+            self.assertEqual(result["status"], "completed")
+            self.assertTrue(Path(result["report"]).is_file())
 
     def test_demo_pause_resume_export_and_score(self):
         root = Path(__file__).resolve().parents[1]

@@ -20,6 +20,10 @@ class RunStore:
                 "CREATE TABLE IF NOT EXISTS runs "
                 "(run_id TEXT PRIMARY KEY, revision INTEGER NOT NULL, state TEXT NOT NULL)"
             )
+            connection.execute(
+                "CREATE INDEX IF NOT EXISTS runs_case_scope ON runs "
+                "(json_extract(state, '$.case_id'), json_extract(state, '$.case_fingerprint'))"
+            )
 
     @contextmanager
     def _connect(self):
@@ -56,3 +60,33 @@ class RunStore:
         if row is None:
             raise KeyError(f"unknown run: {run_id}")
         return json.loads(row[0])
+
+    def list_runs(self, case_fingerprints: dict[str, str], *, limit: int = 50,
+                  before: int | None = None) -> tuple[list[dict], int | None]:
+        """Read one newest-first page for exactly the supplied snapshots.
+
+        The insertion rowid is stable across checkpoint updates, unlike revision
+        or activity time. New runs cannot shift an already-issued older-page
+        cursor. No state is changed, and only one bounded page is decoded.
+        """
+        if type(limit) is not int or not 1 <= limit <= 200:
+            raise ValueError("history limit must be 1..200")
+        if before is not None and (type(before) is not int or not 1 <= before <= 2**63 - 1):
+            raise ValueError("invalid history cursor")
+        if not case_fingerprints:
+            return [], None
+        scopes = " OR ".join(
+            "(json_extract(state, '$.case_id')=? AND json_extract(state, '$.case_fingerprint')=?)"
+            for _ in case_fingerprints
+        )
+        parameters = [value for pair in case_fingerprints.items() for value in pair]
+        query = f"SELECT rowid, state FROM runs WHERE ({scopes})"
+        if before is not None:
+            query += " AND rowid < ?"
+            parameters.append(before)
+        query += " ORDER BY rowid DESC LIMIT ?"
+        parameters.append(limit + 1)
+        with self._connect() as connection:
+            rows = connection.execute(query, parameters).fetchall()
+        next_before = rows[limit - 1][0] if len(rows) > limit else None
+        return [json.loads(row[1]) for row in rows[:limit]], next_before

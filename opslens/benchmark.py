@@ -23,6 +23,7 @@ from .evaluation import (
     paired_bootstrap_difference, percentile, score_run, wilson_interval,
 )
 from .providers import ChatProvider, ProviderError
+from .pagination import bound_result, record_chars
 from .runtime import AgentRuntime, REPORT_SCHEMA, SYSTEM_PROMPT, validate_report
 from .report_audit import audit_report
 from .store import RunStore
@@ -217,19 +218,14 @@ class BudgetedTools:
         result = self.tools.execute(name, arguments)
         if not result.get("ok"):
             return result
-        bounded = {key: value for key, value in result.items() if key != "records"}
-        bounded["records"] = []
-        for record in result.get("records", []):
-            size = len(json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
-            trial = {**bounded, "records": [*bounded["records"], record]}
-            # Runtime also caps each result at 12000 chars. Stay below it so
-            # every charged record is actually delivered by the runtime.
-            if (self.records >= self.max_records or self.chars + size > self.max_chars
-                    or len(json.dumps(trial, ensure_ascii=False)) > 10000):
-                bounded["truncated"] = True
-                continue
-            bounded["records"].append(record)
-            self.chars += size
+        # Preserve a contiguous prefix: skipping a large record would make the
+        # continuation offset jump over evidence the model never received.
+        # Stay below the runtime's 12000-character cap so all charged records
+        # are delivered, including pagination and limit metadata.
+        bounded = bound_result(result, 10000, max_records=self.max_records - self.records,
+                               max_record_chars=self.max_chars - self.chars)
+        for record in bounded["records"]:
+            self.chars += record_chars(record)
             self.records += 1
             self.unique_ids.add(record["id"])
         return bounded

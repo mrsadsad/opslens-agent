@@ -8,11 +8,15 @@ import sys
 import uuid
 from pathlib import Path
 
+from . import __version__
 from .providers import ChatProvider, DeepSeekProvider, DemoProvider, ProviderError
 from .runtime import AgentRuntime
 from .store import RunStore
 from .tools import IncidentTools
 from .config import load_local_env
+
+
+DEFAULT_CASE = Path(__file__).resolve().parent / "fixtures" / "inc001.json"
 
 
 def _provider(mode, profile="deepseek", prompt_key=False):
@@ -80,10 +84,11 @@ def _export(state, directory):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="OpsLens incident investigation lab")
+    parser.add_argument("--version", action="version", version=f"OpsLens {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
     for command in ("demo", "run", "resume"):
         child = sub.add_parser(command)
-        child.add_argument("--case", type=Path, default=Path("data/cases/inc001.json"))
+        child.add_argument("--case", type=Path, default=DEFAULT_CASE)
         child.add_argument("--db", type=Path, default=Path("runs/opslens.sqlite3"))
         child.add_argument("--output", type=Path, default=Path("runs"))
         child.add_argument("--stop-after", type=int, help="pause after N additional model steps")
@@ -120,7 +125,7 @@ def main(argv=None):
     benchmark.add_argument("--prompt-key", action="store_true")
     benchmark.add_argument("--dry-run", action="store_true", help="validate data and print plan without model calls")
     serve = sub.add_parser("serve", help="open the local investigation workbench")
-    serve.add_argument("--cases", nargs="+", type=Path, default=[Path("data/cases/inc001.json")])
+    serve.add_argument("--cases", nargs="+", type=Path, default=[DEFAULT_CASE])
     serve.add_argument("--mode", choices=["demo", "live"], default="demo")
     serve.add_argument("--port", type=int, default=8765)
     serve.add_argument("--db", type=Path, default=Path("runs/workbench.sqlite3"))
@@ -128,7 +133,7 @@ def main(argv=None):
     serve.add_argument("--provider", choices=["deepseek", "compatible"], default="deepseek")
     serve.add_argument("--prompt-key", action="store_true")
     mcp = sub.add_parser("mcp", help="expose read-only incident tools over MCP stdio")
-    mcp.add_argument("--case", type=Path, default=Path("data/cases/inc001.json"))
+    mcp.add_argument("--case", type=Path, default=DEFAULT_CASE)
     args = parser.parse_args(argv)
     try:
         if args.command == "lab":

@@ -153,7 +153,8 @@ class ChatProviderTests(unittest.TestCase):
             self.provider.complete([], [])
 
     def test_malformed_arguments_preserve_usage_for_runtime_repair(self):
-        for arguments in ("bad JSON", "[]", "null", "", '{"service":12}', '{"service":'):
+        for arguments in ("bad JSON", "[]", "null", "", '{"service":12}', '{"service":',
+                          '{"service":NaN}', '{"service":Infinity}', '{"service":1e999}'):
             with self.subTest(arguments=arguments):
                 payload = response_payload()
                 payload["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"] = arguments
@@ -214,6 +215,22 @@ class ChatProviderTests(unittest.TestCase):
                 with self.assertRaises(ProviderError) as caught:
                     self.provider.complete([], [])
                 self.assertEqual(str(caught.exception), code)
+        self.sleep.assert_not_called()
+
+    def test_nonfinite_response_numbers_are_rejected_without_retry_or_body_leak(self):
+        for value in ("NaN", "Infinity", "-Infinity", "1e999", "-1e999"):
+            with self.subTest(value=value):
+                payload = response_payload()
+                payload["choices"][0]["message"]["metadata"] = {"extra": "NUMBER_SENTINEL", "private": SECRET}
+                raw = json.dumps(payload).replace('"NUMBER_SENTINEL"', value).encode()
+                self.provider._opener.open.reset_mock()
+                self.provider._opener.open.return_value = http_response(raw=raw)
+                with self.assertRaises(ProviderError) as caught:
+                    self.provider.complete([], [])
+                self.assertEqual(caught.exception.code, "invalid_json")
+                self.assertEqual(caught.exception.transport_attempts, 1)
+                self.assertNotIn(SECRET, repr(caught.exception))
+                self.assertEqual(self.provider._opener.open.call_count, 1)
         self.sleep.assert_not_called()
 
     def test_invalid_request_is_safe_and_not_sent(self):
