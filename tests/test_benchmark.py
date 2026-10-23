@@ -13,6 +13,7 @@ from opslens.benchmark import (
     load_manifest, summarize_attempts, validate_manifest,
 )
 from opslens.providers import ChatProvider, ProviderError
+from opslens.pagination import bound_result, page_result, record_chars
 
 
 class ProtocolFixtureProvider:
@@ -333,6 +334,53 @@ class BenchmarkTests(unittest.TestCase):
 
 
 class BudgetTests(unittest.TestCase):
+    def test_observation_budget_keeps_prefix_and_reports_blocked_next_record(self):
+        records = [{"id": f"r-{index}", "content": "x" * length}
+                   for index, length in enumerate((10, 1000, 10))]
+        raw = SimpleNamespace(case_id="case", alert="alert", fingerprint="hash", schemas=[],
+                              execute=lambda _, arguments: page_result(records, arguments.get("offset", 0), 20))
+        budget = record_chars(records[0]) + record_chars(records[2])
+        tools = BudgetedTools(raw, max_chars=budget, max_records=20)
+        first = tools.execute("read", {})
+        self.assertEqual([record["id"] for record in first["records"]], ["r-0"])
+        self.assertEqual(first["page"]["next_offset"], 1)
+        self.assertTrue(first["budget_exhausted"])
+        blocked = tools.execute("read", {"offset": 1})
+        self.assertFalse(blocked["ok"])
+        self.assertEqual(blocked["error"]["code"], "observation_budget_exhausted")
+        self.assertEqual(blocked["page"]["next_offset"], 1)
+        self.assertEqual(tools.measurements()["delivered_chars"], record_chars(records[0]))
+
+    def test_response_limit_recomputes_cursor_and_reaches_all_records(self):
+        records = [{"id": f"r-{index:02d}", "content": "x" * 1500} for index in range(45)]
+        raw = SimpleNamespace(case_id="case", alert="alert", fingerprint="hash", schemas=[],
+                              execute=lambda _, arguments: page_result(records, arguments.get("offset", 0), 20))
+        tools = BudgetedTools(raw, max_chars=100000, max_records=100)
+        offset, actual = 0, []
+        while True:
+            result = tools.execute("read", {"offset": offset})
+            self.assertTrue(result["ok"])
+            self.assertLessEqual(len(json.dumps(result, ensure_ascii=False)), 10000)
+            actual.extend(record["id"] for record in result["records"])
+            self.assertEqual(result["page"]["returned_count"], len(result["records"]))
+            if result["page"]["next_offset"] is None:
+                break
+            self.assertGreater(result["page"]["next_offset"], offset)
+            offset = result["page"]["next_offset"]
+        self.assertEqual(actual, [record["id"] for record in records])
+        self.assertEqual(tools.measurements()["delivered_records"], 45)
+        self.assertEqual(tools.measurements()["delivered_chars"], sum(map(record_chars, records)))
+
+    def test_runtime_limit_helper_rebases_nonzero_cursor_without_mutation(self):
+        records = [{"id": f"r-{index}", "content": "x" * 1000} for index in range(30)]
+        page = page_result(records, 20, 20)
+        bounded = bound_result(page, 3500)
+        self.assertEqual(len(bounded["records"]), 3)
+        self.assertEqual(bounded["page"]["next_offset"], 23)
+        self.assertEqual(bounded["page"]["total_matches"], 30)
+        self.assertEqual(page["page"]["returned_count"], 10)
+        self.assertIsNone(page["page"]["next_offset"])
+
     def test_global_reservation_is_atomic_across_workers(self):
         budget = ModelCallBudget(7)
         def reserve(_):

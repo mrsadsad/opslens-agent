@@ -114,6 +114,25 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(state["status"], "budget_exhausted")
         self.assertEqual(state["events"][-2]["result"]["error"]["code"], "invalid_arguments")
 
+    def test_nonfinite_arguments_are_repairable_and_keep_usage_and_checkpoint(self):
+        for value in ("NaN", "Infinity", "-Infinity", "1e999", '-1e999', '{"nested":[NaN]}'):
+            with self.subTest(value=value):
+                response = call("query_metrics", {})
+                response["message"]["tool_calls"][0]["function"]["arguments"] = '{"service":' + value + '}'
+                runtime = self.runtime([response, call("query_metrics", {}), call("submit_diagnosis", report())])
+                state = runtime.run(runtime.start(), stop_after_steps=1)
+                saved = self.store.load(state["run_id"])
+                rejection = next(event for event in saved["events"] if event["kind"] == "tool_result")
+                self.assertEqual(rejection["result"]["error"]["code"], "invalid_arguments")
+                self.assertIsNone(rejection["arguments"])
+                self.assertEqual(saved["observed"], {})
+                self.assertFalse(saved["pending_model_request"])
+                self.assertEqual((saved["steps"], saved["tool_calls"], saved["usage"]["total_tokens"]), (1, 1, 15))
+                completed = runtime.run(saved)
+                self.assertEqual((completed["status"], completed["steps"], completed["usage"]["total_tokens"]), ("completed", 3, 45))
+                self.assertTrue(completed["usage_complete"])
+                self.assertEqual(self.store.load(state["run_id"])["report"], report())
+
     def test_missing_usage_is_not_reported_as_measured_zero(self):
         response = call("query_metrics", {})
         response["usage"] = {}

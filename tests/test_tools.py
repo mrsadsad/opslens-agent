@@ -44,7 +44,9 @@ class IncidentToolsTests(unittest.TestCase):
         result = self.tools.execute("search_logs", {"service": "checkout", "query": "POOLACQUIRETIMEOUT"})
         self.assertEqual([row["id"] for row in result["records"]], ["inc001-l1"])
         result = self.tools.execute("search_logs", {"service": "checkout", "query": ".*"})
-        self.assertEqual(result, {"ok": True, "records": []})
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["records"], [])
+        self.assertEqual(result["page"], {"offset": 0, "total_matches": 0, "returned_count": 0, "next_offset": None})
         result = self.tools.execute("search_runbooks", {"query": "CONNECTION POOL"})
         self.assertEqual([row["id"] for row in result["records"]], ["inc001-r1"])
 
@@ -106,7 +108,9 @@ class IncidentToolsTests(unittest.TestCase):
         fault = tools.execute("query_metrics", {"service": "front", "phase": "fault"})
         self.assertEqual([record["id"] for record in fault["records"]], ["f-m"])
         empty_search = tools.execute("search_logs", {"service": "front", "phase": "baseline", "query": "unmatched"})
-        self.assertEqual(empty_search, {"ok": True, "records": []})
+        self.assertTrue(empty_search["ok"])
+        self.assertEqual(empty_search["records"], [])
+        self.assertEqual(empty_search["page"]["total_matches"], 0)
         # Exposing capability copies must not let callers change subsequent validation.
         capabilities["services"]["front"]["phases_by_kind"]["metric"].append("recovery")
         services[0]["capabilities"]["phases_by_kind"]["metric"].append("recovery")
@@ -142,6 +146,10 @@ class IncidentToolsTests(unittest.TestCase):
         ]
         invalid_calls += [("search_logs", {"service": "checkout", "limit": value})
                           for value in (0, -1, 21, True, False, 1.0, "10", None, [])]
+        invalid_calls += [("search_logs", {"service": "checkout", "offset": value})
+                          for value in (-1, 1001, True, False, 1.0, "1", None, [])]
+        invalid_calls += [("list_services", {"offset": 1}),
+                          ("get_evidence", {"ids": ["inc001-m1"], "offset": 1})]
         for name, arguments in invalid_calls:
             with self.subTest(tool=name, arguments=arguments):
                 self.assert_error(self.tools.execute(name, arguments), "invalid_arguments")
@@ -174,6 +182,98 @@ class IncidentToolsTests(unittest.TestCase):
             self.assertEqual(len(result["records"]), 20)
             self.assertTrue(all(len(record["content"]) <= MAX_CONTENT_CHARS for record in result["records"]))
             self.assertTrue(all(record["content"].endswith("[truncated]") for record in result["records"]))
+            self.assertTrue(all(record["content_truncated"] for record in result["records"]))
+            self.assertTrue(all(record["content_original_chars"] == 5000 for record in result["records"]))
+            self.assertEqual(result["page"]["next_offset"], 20)
+
+    def snapshot_tools(self, records):
+        snapshot = {"synthetic": True, "case_id": "paged", "alert": "Offline pagination fixture",
+                    "services": ["checkout"], "records": records}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "snapshot.json"
+            path.write_text(json.dumps(snapshot), encoding="utf-8")
+            return IncidentTools(path)
+
+    def test_all_paginated_queries_reach_every_matching_record_once(self):
+        records = [{"id": f"{kind}-{index:02d}", "kind": kind, "service": "checkout",
+                    "content": "pool observation", "trace_id": "trace-paged"}
+                   for kind in ("metric", "log", "change", "runbook") for index in range(45)]
+        tools = self.snapshot_tools(records)
+        queries = [("query_metrics", {"service": "checkout"}, "metric"),
+                   ("search_logs", {"service": "checkout", "limit": 20}, "log"),
+                   ("get_changes", {"service": "checkout"}, "change"),
+                   ("search_runbooks", {"query": "pool", "limit": 20}, "runbook"),
+                   ("search_runbooks", {"query": "pool", "limit": 20, "strategy": "bm25"}, "runbook"),
+                   ("get_trace", {"trace_id": "trace-paged"}, None)]
+        for name, arguments, kind in queries:
+            with self.subTest(tool=name):
+                expected = [record["id"] for record in records if kind is None or record["kind"] == kind]
+                actual, offset = [], 0
+                while True:
+                    result = tools.execute(name, {**arguments, "offset": offset})
+                    self.assertTrue(result["ok"])
+                    page = result["page"]
+                    self.assertEqual(page["total_matches"], len(expected))
+                    self.assertEqual(page["offset"], offset)
+                    self.assertEqual(page["returned_count"], len(result["records"]))
+                    actual.extend(record["id"] for record in result["records"])
+                    if page["next_offset"] is None:
+                        self.assertFalse(result["truncated"])
+                        break
+                    self.assertGreater(page["next_offset"], offset)
+                    offset = page["next_offset"]
+                self.assertEqual(actual, expected)
+
+    def test_pages_count_only_filtered_matches_and_accept_terminal_offsets(self):
+        records = [{"id": f"log-{index:02d}", "kind": "log", "service": "checkout",
+                    "phase": "fault" if index % 2 else "baseline",
+                    "content": "WARN deadline" if index % 3 else "INFO completed"}
+                   for index in range(45)]
+        tools = self.snapshot_tools(records)
+        arguments = {"service": "checkout", "phase": "fault", "query": "deadline", "limit": 3}
+        expected = [record["id"] for record in records
+                    if record["phase"] == "fault" and "deadline" in record["content"]]
+        result = tools.execute("search_logs", {**arguments, "offset": 3})
+        self.assertEqual([record["id"] for record in result["records"]], expected[3:6])
+        self.assertEqual(result["page"]["total_matches"], len(expected))
+        for offset in (len(expected), 1000):
+            result = tools.execute("search_logs", {**arguments, "offset": offset})
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["records"], [])
+            self.assertIsNone(result["page"]["next_offset"])
+            self.assertEqual(result["page"]["total_matches"], len(expected))
+
+    def test_long_content_boundary_is_explicit_and_search_does_not_claim_tail_coverage(self):
+        records = [{"id": "exact", "kind": "log", "service": "checkout", "content": "x" * MAX_CONTENT_CHARS},
+                   {"id": "long", "kind": "log", "service": "checkout",
+                    "content": "x" * 2000 + "tail_failure_marker"}]
+        tools = self.snapshot_tools(records)
+        exact, long = tools.execute("get_evidence", {"ids": ["exact", "long"]})["records"]
+        self.assertFalse(exact["content_truncated"])
+        self.assertEqual(exact["content"], records[0]["content"])
+        self.assertTrue(long["content_truncated"])
+        self.assertEqual(long["content_original_chars"], len(records[1]["content"]))
+        self.assertLessEqual(len(long["content"]), MAX_CONTENT_CHARS)
+        self.assertNotIn("tail_failure_marker", long["content"])
+        search = tools.execute("search_logs", {"service": "checkout", "query": "tail_failure_marker"})
+        self.assertEqual(search["records"], [])
+        self.assertEqual(search["search_scope"], "visible_content_prefix")
+        self.assertEqual(search["content_limit_chars"], MAX_CONTENT_CHARS)
+
+    def test_service_evidence_round_trips_without_losing_capabilities_or_aliasing(self):
+        service = self.tools.execute("list_services", {})["records"][0]
+        returned = self.tools.execute("get_evidence", {"ids": [service["id"], "inc001-m1"]})
+        self.assertTrue(returned["ok"])
+        self.assertEqual(returned["records"][0], service)
+        returned["records"][0]["capabilities"]["available_kinds"].clear()
+        again = self.tools.execute("get_evidence", {"ids": [service["id"]]})
+        self.assertEqual(again["records"][0], service)
+        self.assert_error(self.tools.execute("get_evidence", {"ids": ["inc001-service-999"]}), "unknown_evidence")
+
+    def test_snapshot_cannot_impersonate_generated_service_evidence(self):
+        with self.assertRaisesRegex(ValueError, "collide"):
+            self.snapshot_tools([{"id": "paged-service-1", "kind": "log", "service": "checkout",
+                                  "content": "Untrusted text cannot replace service capabilities"}])
 
     def test_mutating_output_does_not_mutate_the_snapshot(self):
         first = self.tools.execute("query_metrics", {"service": "checkout"})

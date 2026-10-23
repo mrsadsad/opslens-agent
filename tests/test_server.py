@@ -8,8 +8,10 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import Mock, patch
 
 from opslens.providers import DemoProvider, ProviderError
+from opslens.runtime import AgentRuntime
 from opslens.server import create_server
 
 
@@ -61,6 +63,71 @@ class WorkbenchTests(unittest.TestCase):
         status, result, _ = self.request("POST", "/api/runs", {"case_id": "inc001", **extra})
         self.assertEqual(status, 202, result)
         return result["run_id"]
+
+    def test_multi_agent_http_and_restart_hide_member_transcripts(self):
+        run_id = self.create_run(policy="multi-agent")
+        state = self.wait_for(run_id, {"completed"})
+        self.assertEqual(state["steps"], 11)
+        self.assertEqual(len(state["agents"]), 4)
+        self.assertNotIn("_members", state)
+        self.assertNotIn("messages", json.dumps(state))
+        events = self.request("GET", f"/api/runs/{run_id}/events")[1]["events"]
+        self.assertEqual({e["agent"] for e in events if e["kind"] == "agent_event"},
+                         {"metrics", "logs", "changes", "coordinator"})
+        self.restart()
+        historical = self.request("GET", f"/api/runs/{run_id}")[1]
+        self.assertTrue(historical["historical"])
+        self.assertEqual(historical["agents"], state["agents"])
+        self.assertEqual(historical["report"], state["report"])
+        rows = self.request("GET", "/api/runs")[1]["runs"]
+        self.assertEqual(len(rows), 1)
+        exported = json.loads((self.root / "output" / run_id / "result.json").read_text(encoding="utf-8"))
+        self.assertNotIn("_members", exported)
+
+    def test_multi_agent_low_budget_is_rejected_without_creating_job(self):
+        status, value, _ = self.request("POST", "/api/runs", {
+            "case_id": "inc001", "policy": "multi-agent", "max_steps": 3})
+        self.assertEqual(status, 400)
+        self.assertEqual(value["error"]["code"], "invalid_team_budget")
+        self.assertEqual(self.request("GET", "/api/runs")[1]["runs"], [])
+
+    def test_multi_agent_cooperative_cancel_stops_before_next_round(self):
+        from opslens.team import TeamDemoProvider
+        gate = threading.Event()
+        entered = threading.Event()
+        self.gates.append(gate)
+
+        class SlowProvider:
+            name = "slow-team-test"
+
+            def complete(self, messages, tools):
+                entered.set()
+                gate.wait(timeout=5)
+                return TeamDemoProvider("metrics").complete(messages, tools)
+
+        self.provider_factory = SlowProvider
+        run_id = self.create_run(policy="multi-agent")
+        self.assertTrue(entered.wait(timeout=5))
+        self.assertEqual(self.request("POST", f"/api/runs/{run_id}/cancel", {})[0], 202)
+        gate.set()
+        state = self.wait_for(run_id, {"cancelled"})
+        self.assertLessEqual(state["steps"], 3)
+        self.assertEqual(state["agents"]["coordinator"]["status"], "pending")
+        self.assertIsNone(state["report"])
+
+    def restart(self, case_paths=None, db_path=None):
+        self.server.shutdown()
+        self.thread.join(timeout=10)
+        self.server.server_close()
+        self.assertFalse(self.thread.is_alive())
+        self.server = create_server(case_paths or [CASE], db_path or self.root / "checkpoints.sqlite3",
+                                    self.root / "output", lambda: self.provider_factory(), port=0)
+        self.port = self.server.server_address[1]
+        self.origin = f"http://127.0.0.1:{self.port}"
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+        status, self.config, _ = self.request("GET", "/api/config")
+        self.assertEqual(status, 200)
 
     def wait_for(self, run_id, statuses):
         end = time.monotonic() + 8
@@ -250,6 +317,121 @@ class WorkbenchTests(unittest.TestCase):
         # Rejections must return the admission permit, so valid work still runs.
         valid = self.create_run()
         self.assertEqual(self.wait_for(valid, {"completed"})["policy"], "react")
+
+    def test_restart_keeps_completed_report_and_events_without_starting_a_provider(self):
+        run_id = self.create_run()
+        self.server.jobs[run_id].future.result(timeout=5)
+        _, original, _ = self.request("GET", f"/api/runs/{run_id}")
+        _, original_events, _ = self.request("GET", f"/api/runs/{run_id}/events")
+        checkpoint = self.server.store.load(run_id)
+        old_token = self.config["csrf_token"]
+        self.provider_factory = Mock(side_effect=AssertionError("history must not construct a provider"))
+        self.restart()
+
+        _, listing, _ = self.request("GET", "/api/runs")
+        self.assertEqual([run["run_id"] for run in listing["runs"]], [run_id])
+        status, recovered, _ = self.request("GET", f"/api/runs/{run_id}")
+        self.assertEqual(status, 200)
+        self.assertEqual(recovered["status"], "completed")
+        self.assertTrue(recovered["historical"])
+        self.assertFalse(original["historical"])
+        self.assertEqual(recovered["report"], original["report"])
+        self.assertEqual(recovered["observed"], original["observed"])
+        self.assertEqual(self.request("GET", f"/api/runs/{run_id}/events")[1], original_events)
+        status, error, _ = self.request("POST", f"/api/runs/{run_id}/cancel", {})
+        self.assertEqual((status, error["error"]["code"]), (409, "history_read_only"))
+        self.assertEqual(self.server.store.load(run_id), checkpoint)
+        self.assertEqual(self.server.jobs, {})
+        self.provider_factory.assert_not_called()
+
+        # A stale page receives an explicit pre-execution rejection. It must
+        # refresh its session token before making any new mutation.
+        status, error, _ = self.request("POST", "/api/runs", {"case_id": "inc001"},
+                                        {"X-CSRF-Token": old_token})
+        self.assertEqual((status, error["error"]["code"]), (403, "invalid_csrf_token"))
+        self.provider_factory.assert_not_called()
+        self.provider_factory = DemoProvider
+        with patch("opslens.server.MAX_SESSION_RUNS", 1):
+            fresh = self.create_run()
+            self.wait_for(fresh, {"completed"})
+            self.assertEqual(self.request("POST", "/api/runs", {"case_id": "inc001"})[0], 429)
+        self.assertNotEqual(fresh, run_id)
+
+    def test_unowned_checkpoints_are_read_only_interrupted_with_unknown_pending_usage(self):
+        runtime = AgentRuntime(self.server.cases["inc001"], DemoProvider(), self.server.store)
+        checkpoints = []
+        for previous in ("queued", "running", "paused"):
+            state = runtime.start()
+            state["status"] = previous
+            state["pending_model_request"] = previous == "running"
+            state["usage"] = {"prompt_tokens": 10, "completion_tokens": 2, "total_tokens": 12}
+            state["usage_complete"] = True
+            self.server.store.save(state)
+            checkpoints.append(state)
+        self.provider_factory = Mock(side_effect=AssertionError("history is read-only"))
+        self.restart()
+        _, listing, _ = self.request("GET", "/api/runs")
+        self.assertEqual(len(listing["runs"]), 3)
+        self.assertTrue(all(run["status"] == "interrupted" for run in listing["runs"]))
+        for checkpoint in checkpoints:
+            run_id = checkpoint["run_id"]
+            with self.subTest(status=checkpoint["status"]):
+                status, recovered, _ = self.request("GET", f"/api/runs/{run_id}")
+                self.assertEqual(status, 200)
+                self.assertEqual(recovered["status"], "interrupted")
+                self.assertEqual(recovered["checkpoint_status"], checkpoint["status"])
+                self.assertEqual(recovered["usage_complete"], not checkpoint["pending_model_request"])
+                self.assertEqual(recovered["usage"]["total_tokens"], 12)
+                self.assertTrue(recovered["historical"])
+                self.assertFalse(recovered["cancel_requested"])
+                _, events, _ = self.request("GET", f"/api/runs/{run_id}/events")
+                self.assertEqual(events["status"], "interrupted")
+                self.assertEqual(events["events"], checkpoint["events"])
+                self.assertEqual(self.request("POST", f"/api/runs/{run_id}/cancel", {})[0], 409)
+                self.assertEqual(self.server.store.load(run_id), checkpoint)
+        self.provider_factory.assert_not_called()
+        self.assertEqual(self.server.jobs, {})
+
+    def test_history_scope_requires_same_database_case_id_and_snapshot_contents(self):
+        run_id = self.create_run()
+        self.server.jobs[run_id].future.result(timeout=5)
+        self.provider_factory = Mock(side_effect=AssertionError("history is read-only"))
+        for case_paths, db_path in (
+                ([CASE.with_name("inc002.json")], None),
+                ([CASE], self.root / "empty.sqlite3")):
+            with self.subTest(cases=case_paths, database=db_path):
+                self.restart(case_paths=case_paths, db_path=db_path)
+                self.assertEqual(self.request("GET", "/api/runs")[1]["runs"], [])
+                for endpoint in (f"/api/runs/{run_id}", f"/api/runs/{run_id}/events"):
+                    self.assertEqual(self.request("GET", endpoint)[0], 404)
+                self.assertEqual(self.request("POST", f"/api/runs/{run_id}/cancel", {})[0], 404)
+        changed_case = json.loads(CASE.read_text(encoding="utf-8"))
+        changed_case["alert"] += " changed snapshot"
+        changed_path = self.root / "changed-case.json"
+        changed_path.write_text(json.dumps(changed_case), encoding="utf-8")
+        self.restart(case_paths=[changed_path])
+        self.assertEqual(self.request("GET", "/api/runs")[1]["runs"], [])
+        self.assertEqual(self.request("GET", f"/api/runs/{run_id}")[0], 404)
+        self.provider_factory.assert_not_called()
+
+    def test_history_pages_are_bounded_and_stable_when_new_runs_arrive(self):
+        runtime = AgentRuntime(self.server.cases["inc001"], DemoProvider(), self.server.store)
+        runs = [runtime.start()["run_id"] for _ in range(5)]
+        _, first, _ = self.request("GET", "/api/runs?limit=2")
+        self.assertEqual([run["run_id"] for run in first["runs"]], runs[::-1][:2])
+        self.assertEqual(first["limit"], 2)
+        newest = runtime.start()["run_id"]
+        _, second, _ = self.request("GET", f"/api/runs?limit=2&before={first['next_before']}")
+        _, last, _ = self.request("GET", f"/api/runs?limit=2&before={second['next_before']}")
+        combined = first["runs"] + second["runs"] + last["runs"]
+        self.assertEqual([run["run_id"] for run in combined], runs[::-1])
+        self.assertIsNone(last["next_before"])
+        self.assertEqual(self.request("GET", "/api/runs?limit=1")[1]["runs"][0]["run_id"], newest)
+        for query in ("limit=0", "limit=201", "limit=2&limit=3", "before=0", "before=-1",
+                      "before=9223372036854775808", "before=nope", "before=", "unknown=1"):
+            with self.subTest(query=query):
+                status, error, _ = self.request("GET", "/api/runs?" + query)
+                self.assertEqual((status, error["error"]["code"]), (400, "invalid_history_cursor"))
 
 
 if __name__ == "__main__":

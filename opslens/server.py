@@ -26,18 +26,20 @@ from .tools import IncidentTools
 WORKERS = 2
 QUEUE_SIZE = 4
 MAX_SESSION_RUNS = 200
+HISTORY_PAGE_SIZE = 50
+MAX_HISTORY_PAGE_SIZE = 200
 MAX_BODY_BYTES = 8192
 MAX_REJECT_DRAIN_BYTES = 64 * 1024
 REJECT_DRAIN_SECONDS = 0.25
 _RUN_PATH = re.compile(r"/api/runs/([a-f0-9]{32})(?:/(events|cancel))?\Z")
-_PRIVATE_KEYS = {"messages", "reasoning_content", "api_key", "_api_key", "authorization"}
+_PRIVATE_KEYS = {"messages", "_members", "reasoning_content", "api_key", "_api_key", "authorization"}
 _PUBLIC_FIELDS = {
     "run_id", "case_id", "provider", "status", "steps", "tool_calls", "max_steps",
     "max_tool_calls", "usage", "usage_complete", "model_seconds", "report", "observed",
     "pending_model_request", "max_seconds", "elapsed_seconds", "deadline_seconds",
     "hypotheses", "tool_seconds", "transport_attempts",
     "policy", "max_total_tokens", "max_context_chars", "source", "definition_hash",
-    "report_audit",
+    "report_audit", "agents", "phase", "partial",
 }
 
 
@@ -71,6 +73,7 @@ class _WorkbenchServer(ThreadingHTTPServer):
 
     def __init__(self, address, cases, store, output_dir, provider_factory):
         self.cases = cases
+        self.case_fingerprints = {case_id: case.fingerprint for case_id, case in cases.items()}
         self.store = store
         self.output_dir = Path(output_dir)
         self.provider_factory = provider_factory
@@ -119,9 +122,15 @@ class _WorkbenchServer(ThreadingHTTPServer):
                     return None, "session_limit"
                 provider = self.provider_factory()
                 selected_policy = policy or ("react" if provider.name == "scripted-demo" else "investigator")
-                if provider.name == "scripted-demo" and selected_policy != "react":
+                if provider.name == "scripted-demo" and selected_policy not in {"react", "multi-agent"}:
                     return None, "unsupported_demo_policy"
-                runtime = AgentRuntime(self.cases[case_id], provider, self.store, policy=selected_policy)
+                if selected_policy == "multi-agent":
+                    if max_steps < 12 or max_tool_calls < 16:
+                        return None, "invalid_team_budget"
+                    from .team import TeamRuntime
+                    runtime = TeamRuntime(self.cases[case_id], self.provider_factory, self.store)
+                else:
+                    runtime = AgentRuntime(self.cases[case_id], provider, self.store, policy=selected_policy)
                 # The scripted provider only has an inc001 walkthrough.
                 if runtime.provider.name == "scripted-demo" and case_id != "inc001":
                     return None, "demo_case_unsupported"
@@ -206,18 +215,43 @@ class _WorkbenchServer(ThreadingHTTPServer):
             temporary.replace(destination / filename)
 
     def snapshot(self, run_id, detail=True):
-        with self.jobs_lock:
-            job = self.jobs.get(run_id)
-        if job is None:
+        try:
+            state = self.store.load(run_id)
+        except KeyError:
             return None
-        state = self.store.load(run_id)
+        return self._snapshot_state(state, detail=detail)
+
+    def _snapshot_state(self, state, detail=True):
+        # A reused case ID with different contents must not expose a previous
+        # snapshot's observations. The database plus exact case allowlist defines
+        # this local workbench's visible history; it is not a multi-user service.
+        if (state.get("case_id") not in self.case_fingerprints
+                or self.case_fingerprints[state["case_id"]] != state.get("case_fingerprint")):
+            return None
+        with self.jobs_lock:
+            job = self.jobs.get(state["run_id"])
         fields = _PUBLIC_FIELDS if detail else _PUBLIC_FIELDS - {"observed", "report"}
         result = _public({key: value for key, value in state.items() if key in fields})
-        result["status"] = job.phase
-        result["cancel_requested"] = job.cancel.is_set()
+        result["historical"] = job is None
+        result["checkpoint_status"] = state["status"]
+        result["status"] = job.phase if job else state["status"]
+        result["cancel_requested"] = job.cancel.is_set() if job else False
+        if job is None:
+            if state["status"] in {"queued", "running", "paused"}:
+                result["status"] = "interrupted"
+                result["interruption_reason"] = "not_owned_by_current_session"
+            if state.get("pending_model_request"):
+                # The request could have reached the provider before process
+                # interruption. Do not claim its usage or billing is known.
+                result["usage_complete"] = False
         result["event_cursor"] = len(state["events"])
         result["created_at"] = state["events"][0]["time"] if state["events"] else None
         return result
+
+    def list_runs(self, limit=HISTORY_PAGE_SIZE, before=None):
+        states, next_before = self.store.list_runs(self.case_fingerprints, limit=limit, before=before)
+        return {"runs": [self._snapshot_state(state, detail=False) for state in states],
+                "next_before": next_before, "limit": limit}
 
 
 class _Handler(BaseHTTPRequestHandler):
@@ -333,13 +367,24 @@ class _Handler(BaseHTTPRequestHandler):
                                 "cases": [{"case_id": case.case_id, "alert": case.alert}
                                           for case in self.server.cases.values()],
                                 "limits": {"workers": WORKERS, "queue": QUEUE_SIZE,
-                                           "session_runs": MAX_SESSION_RUNS}})
+                                           "session_runs": MAX_SESSION_RUNS,
+                                           "history_page_size": HISTORY_PAGE_SIZE,
+                                           "max_history_page_size": MAX_HISTORY_PAGE_SIZE}})
             return
-        if parsed.path == "/api/runs" and not parsed.query:
-            with self.server.jobs_lock:
-                run_ids = list(self.server.jobs)
-            self._respond(200, {"runs": [self.server.snapshot(run_id, detail=False)
-                                         for run_id in reversed(run_ids)]})
+        if parsed.path == "/api/runs":
+            query = parse_qs(parsed.query, keep_blank_values=True)
+            try:
+                if set(query) - {"limit", "before"} or any(len(values) != 1 for values in query.values()):
+                    raise ValueError
+                limit = int(query.get("limit", [str(HISTORY_PAGE_SIZE)])[0])
+                before = int(query["before"][0]) if "before" in query else None
+                if (not 1 <= limit <= MAX_HISTORY_PAGE_SIZE
+                        or (before is not None and not 1 <= before <= 2**63 - 1)):
+                    raise ValueError
+            except ValueError:
+                self._error(400, "invalid_history_cursor")
+                return
+            self._respond(200, self.server.list_runs(limit=limit, before=before))
             return
         match = _RUN_PATH.fullmatch(parsed.path)
         if not match or match[2] == "cancel":
@@ -405,14 +450,14 @@ class _Handler(BaseHTTPRequestHandler):
             policy = payload.get("policy")
             if (set(payload) - {"case_id", "max_steps", "max_tool_calls", "policy"}
                     or not isinstance(case_id, str) or len(case_id) > 80
-                    or ("policy" in payload and policy not in ("react", "investigator"))
+                    or ("policy" in payload and policy not in ("react", "investigator", "multi-agent"))
                     or type(max_steps) is not int or not 1 <= max_steps <= 100
                     or type(max_tools) is not int or not 1 <= max_tools <= 200):
                 self._error(400, "invalid_request")
                 return
             run_id, error = self.server.start_run(case_id, max_steps, max_tools, policy)
             if error:
-                status = (400 if error == "unsupported_demo_policy" else 404 if error == "unknown_case"
+                status = (400 if error in {"unsupported_demo_policy", "invalid_team_budget"} else 404 if error == "unknown_case"
                           else 429 if error in {"queue_full", "session_limit"} else 503)
                 self._error(status, error)
             else:
@@ -428,7 +473,10 @@ class _Handler(BaseHTTPRequestHandler):
         with self.server.jobs_lock:
             job = self.server.jobs.get(match[1])
         if job is None:
-            self._error(404, "unknown_run")
+            if self.server.snapshot(match[1]) is None:
+                self._error(404, "unknown_run")
+            else:
+                self._error(409, "history_read_only")
         elif job.phase not in {"queued", "running"}:
             self._respond(200, {"run_id": match[1], "status": job.phase, "cancel_requested": False})
         else:

@@ -36,10 +36,12 @@ with create_server(
 | `GET /` | 无外部 CDN 的中文工作台，支持浅色和深色 |
 | `GET /api/config` | 返回案例白名单、容量限制和随机会话 CSRF token |
 | `POST /api/runs` | 创建任务；请求包含 `case_id`，可选 `max_steps`、`max_tool_calls`、`policy` |
-| `GET /api/runs` | 当前服务会话内的任务列表，按创建时间倒序 |
+| `GET /api/runs?limit=50&before=N` | 当前数据库内匹配案例 ID 与内容指纹的任务历史；默认每页 50，最多 200，使用返回的 `next_before` 读取更早记录 |
 | `GET /api/runs/{run_id}` | 公开状态、预算、用量、观测证据、报告和 `report_audit` 数值风险 |
 | `GET /api/runs/{run_id}/events?after=N` | 返回 `seq > N` 的事件及 `next_cursor` |
 | `POST /api/runs/{run_id}/cancel` | 以空对象 `{}` 请求协作取消 |
+
+0.4 会在服务重启后只读展示历史，`historical` 表示任务不属于当前内存执行会话。旧的 queued/running/paused 显示为 interrupted，原始状态保留在 `checkpoint_status`；pending 请求的用量标记为不完整。浏览历史不会构造模型提供商、不会自动恢复执行，也不占新会话的 200 个任务名额。取消历史返回 `409 history_read_only`。不同案例内容、案例白名单外或其他数据库中的记录不可见；这些约束不等于多用户鉴权。旧页面的 CSRF token 过期时需要刷新页面，服务不会自动重复 POST。
 
 写请求必须使用 `Content-Type: application/json`，携带与当前 `Host` 一致的 `Origin` 和 `/api/config` 返回的 `X-CSRF-Token`。创建成功返回 `202` 和 `run_id`；容量已满返回 `429 queue_full`；非白名单案例返回 `404 unknown_case`。错误只有稳定错误码，不包含原始模型响应、密钥或服务器路径。
 
