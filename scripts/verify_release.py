@@ -119,6 +119,14 @@ def verify(wheel, report):
                 "Demo report cites evidence never observed")
         report["checks"].append("installed_demo_pause_resume")
 
+        team = json.loads(run([*command, "demo", "--policy", "multi-agent", "--stop-after", "3"], work, environment))
+        require(team["status"] == "paused", "Installed team did not pause")
+        team = json.loads(run([*command, "resume", team["run_id"]], work, environment))
+        require(team["status"] == "completed" and team["steps"] == 11, "Installed team failed to resume")
+        team_state = json.loads(Path(team["report"]).with_name("result.json").read_text(encoding="utf-8"))
+        require(len(team_state["agents"]) == 4 and "_members" not in team_state, "Invalid public team export")
+        report["checks"].append("installed_multi_agent_pause_resume")
+
         messages = [
             {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
                 "protocolVersion": "2025-11-25", "capabilities": {},

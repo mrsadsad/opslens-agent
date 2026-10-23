@@ -44,7 +44,7 @@ def _provider(mode, profile="deepseek", prompt_key=False):
 def _export(state, directory):
     directory = Path(directory) / state["run_id"]
     directory.mkdir(parents=True, exist_ok=True)
-    public = {key: value for key, value in state.items() if key != "messages"}
+    public = {key: value for key, value in state.items() if key not in {"messages", "_members"}}
     (directory / "result.json").write_text(json.dumps(public, ensure_ascii=False, indent=2), encoding="utf-8")
     (directory / "trace.jsonl").write_text(
         "".join(json.dumps(event, ensure_ascii=False) + "\n" for event in state["events"]), encoding="utf-8"
@@ -54,6 +54,13 @@ def _export(state, directory):
              f"- Case: `{state['case_id']}`", f"- Mode: `{state['provider']}`",
              f"- Status: `{state['status']}`", ""]
     lines += [f"- Policy: `{state.get('policy', 'react')}`", f"- Source: `{state.get('source', 'unknown')}`", ""]
+    if state.get("agents"):
+        lines += ["## Agent 协作", ""]
+        for agent in state["agents"].values():
+            lines.append(f"- {agent['label']}: {agent['status']}，模型请求 {agent['steps']} 次")
+        if state.get("partial"):
+            lines.append("部分专项未完成；下列最终报告仍需审阅缺失范围。")
+        lines.append("")
     audit = state.get("report_audit")
     if audit is not None:
         lines += ["## 数值风险检查", "", f"规则版本：`{audit['version']}`。这不是全面的语义或因果验证。", ""]
@@ -91,10 +98,10 @@ def main(argv=None):
         child.add_argument("--case", type=Path, default=DEFAULT_CASE)
         child.add_argument("--db", type=Path, default=Path("runs/opslens.sqlite3"))
         child.add_argument("--output", type=Path, default=Path("runs"))
-        child.add_argument("--stop-after", type=int, help="pause after N additional model steps")
+        child.add_argument("--stop-after", type=int, help="pause after N additional model steps; multi-agent counts scheduling rounds")
         child.add_argument("--provider", choices=["deepseek", "compatible"], default="deepseek")
         child.add_argument("--prompt-key", action="store_true", help="read DeepSeek key without echo or saving")
-        child.add_argument("--policy", choices=["react", "investigator"], help="live defaults to investigator, demo to react")
+        child.add_argument("--policy", choices=["react", "investigator", "multi-agent"], help="live defaults to investigator, demo to react; multi-agent uses total budgets across four roles")
         if command == "resume":
             child.add_argument("run_id")
             child.add_argument("--mode", choices=["demo", "live"], default="demo")
@@ -194,9 +201,14 @@ def main(argv=None):
         store = RunStore(args.db)
         loaded = store.load(args.run_id) if args.command == "resume" else None
         policy = args.policy or (loaded.get("policy", "react") if loaded else "react" if mode == "demo" else "investigator")
-        if mode == "demo" and policy != "react":
-            raise ValueError("scripted demo supports react only; investigator requires a live model")
-        runtime = AgentRuntime(tools, _provider(mode, args.provider, args.prompt_key), store, policy=policy)
+        if mode == "demo" and policy not in {"react", "multi-agent"}:
+            raise ValueError("scripted demo supports react and multi-agent; investigator requires a live model")
+        provider = _provider(mode, args.provider, args.prompt_key)
+        if policy == "multi-agent":
+            from .team import TeamRuntime
+            runtime = TeamRuntime(tools, lambda: _provider(mode, args.provider), store)
+        else:
+            runtime = AgentRuntime(tools, provider, store, policy=policy)
         state = loaded if loaded else runtime.start(args.max_steps, args.max_tools, args.max_tokens, args.context_chars)
         print(f"Run {state['run_id']} | {state['provider']}", file=sys.stderr, flush=True)
         state = runtime.run(state, stop_after_steps=args.stop_after)

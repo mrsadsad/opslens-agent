@@ -4,7 +4,9 @@ OpsLens 把一次故障调查做成可复现的工程实验：采集真实本机
 
 它关注三个问题：**Agent 能否找到正确组件和原因？新增调查机制是否比简单基线更有效？失败后能否解释、恢复并复跑？**
 
-当前版本为 0.4.0。本轮修复证据回取后的上下文丢失、分页截断、非法 JSON 检查点失败、工作台重启历史不可见和安装后默认案例缺失；204 项本地软件测试及隔离安装的 5 项验收通过，未调用收费模型。见 [0.4 可靠性改进与演示](docs/RELIABILITY_V04.md)。
+当前本地开发版本为 **0.5.0**，新增 **多 Agent 协作调查**：指标、日志、变更三个专项并行，协调 Agent 回取证据并汇总；支持独立上下文、全队预算、SQLite 暂停恢复及工作台状态展示。无 Key 可运行 `python -m opslens demo --policy multi-agent`，或启动工作台选择“多 Agent 协作”。架构、运行方法和限制见 [多 Agent 说明](docs/MULTI_AGENT.md)。
+
+0.4 版本修复证据回取后的上下文丢失、分页截断、非法 JSON 检查点失败、工作台重启历史不可见和安装后默认案例缺失；204 项本地软件测试及隔离安装的 5 项验收通过，未调用收费模型。见 [0.4 可靠性改进与演示](docs/RELIABILITY_V04.md)。
 
 历史版本已完成 8 个案例、4 种策略、32 次真实 DeepSeek 对照尝试，并保留冻结源码、快照、失败轨迹和用量。**结果未证明 Investigator 普遍优于简单基线；复核还发现数值检查误报、类别口径与证据标注问题。** 后续 3 次已知案例回归与原始成绩分开记录。本轮软件修复没有重新测量模型准确率，不宣称线上收益或生产就绪。见 [实验结果](docs/EXPERIMENT_RESULTS_V03.md) 和 [全部逐案例产物](eval/results/v03/README.md)。
 
@@ -28,7 +30,7 @@ python -m opslens serve
 ```powershell
 python scripts/verify_archives.py
 python -m pip wheel . --no-deps --wheel-dir dist
-python scripts/verify_release.py --wheel dist/opslens_agent-0.4.0-py3-none-any.whl
+python scripts/verify_release.py --wheel dist/opslens_agent-0.5.0-py3-none-any.whl
 ```
 
 无需模型 Key 也可采集真实故障：

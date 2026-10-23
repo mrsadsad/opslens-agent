@@ -64,6 +64,57 @@ class WorkbenchTests(unittest.TestCase):
         self.assertEqual(status, 202, result)
         return result["run_id"]
 
+    def test_multi_agent_http_and_restart_hide_member_transcripts(self):
+        run_id = self.create_run(policy="multi-agent")
+        state = self.wait_for(run_id, {"completed"})
+        self.assertEqual(state["steps"], 11)
+        self.assertEqual(len(state["agents"]), 4)
+        self.assertNotIn("_members", state)
+        self.assertNotIn("messages", json.dumps(state))
+        events = self.request("GET", f"/api/runs/{run_id}/events")[1]["events"]
+        self.assertEqual({e["agent"] for e in events if e["kind"] == "agent_event"},
+                         {"metrics", "logs", "changes", "coordinator"})
+        self.restart()
+        historical = self.request("GET", f"/api/runs/{run_id}")[1]
+        self.assertTrue(historical["historical"])
+        self.assertEqual(historical["agents"], state["agents"])
+        self.assertEqual(historical["report"], state["report"])
+        rows = self.request("GET", "/api/runs")[1]["runs"]
+        self.assertEqual(len(rows), 1)
+        exported = json.loads((self.root / "output" / run_id / "result.json").read_text(encoding="utf-8"))
+        self.assertNotIn("_members", exported)
+
+    def test_multi_agent_low_budget_is_rejected_without_creating_job(self):
+        status, value, _ = self.request("POST", "/api/runs", {
+            "case_id": "inc001", "policy": "multi-agent", "max_steps": 3})
+        self.assertEqual(status, 400)
+        self.assertEqual(value["error"]["code"], "invalid_team_budget")
+        self.assertEqual(self.request("GET", "/api/runs")[1]["runs"], [])
+
+    def test_multi_agent_cooperative_cancel_stops_before_next_round(self):
+        from opslens.team import TeamDemoProvider
+        gate = threading.Event()
+        entered = threading.Event()
+        self.gates.append(gate)
+
+        class SlowProvider:
+            name = "slow-team-test"
+
+            def complete(self, messages, tools):
+                entered.set()
+                gate.wait(timeout=5)
+                return TeamDemoProvider("metrics").complete(messages, tools)
+
+        self.provider_factory = SlowProvider
+        run_id = self.create_run(policy="multi-agent")
+        self.assertTrue(entered.wait(timeout=5))
+        self.assertEqual(self.request("POST", f"/api/runs/{run_id}/cancel", {})[0], 202)
+        gate.set()
+        state = self.wait_for(run_id, {"cancelled"})
+        self.assertLessEqual(state["steps"], 3)
+        self.assertEqual(state["agents"]["coordinator"]["status"], "pending")
+        self.assertIsNone(state["report"])
+
     def restart(self, case_paths=None, db_path=None):
         self.server.shutdown()
         self.thread.join(timeout=10)

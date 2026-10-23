@@ -125,12 +125,12 @@ def _bounded_result(result: dict, max_chars: int = 12000) -> dict:
 
 
 class AgentRuntime:
-    def __init__(self, tools, provider, store: RunStore, policy: str = "react"):
+    def __init__(self, tools, provider, store: RunStore, policy: str = "react", *, instructions: str = ""):
         self.tools, self.provider, self.store = tools, provider, store
         if policy not in ("react", "investigator"):
             raise ValueError("policy must be react or investigator")
         self.policy = policy
-        self.prompt = SYSTEM_PROMPT + (INSTRUCTIONS if policy == "investigator" else "")
+        self.prompt = SYSTEM_PROMPT + (INSTRUCTIONS if policy == "investigator" else "") + instructions
         self.schemas = [*tools.schemas, *([HYPOTHESIS_SCHEMA] if policy == "investigator" else []), REPORT_SCHEMA]
         self.definition_hash = hashlib.sha256(json.dumps(
             {"prompt": self.prompt, "tools": self.schemas, "report_audit": AUDIT_VERSION,

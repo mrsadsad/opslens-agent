@@ -32,14 +32,14 @@ MAX_BODY_BYTES = 8192
 MAX_REJECT_DRAIN_BYTES = 64 * 1024
 REJECT_DRAIN_SECONDS = 0.25
 _RUN_PATH = re.compile(r"/api/runs/([a-f0-9]{32})(?:/(events|cancel))?\Z")
-_PRIVATE_KEYS = {"messages", "reasoning_content", "api_key", "_api_key", "authorization"}
+_PRIVATE_KEYS = {"messages", "_members", "reasoning_content", "api_key", "_api_key", "authorization"}
 _PUBLIC_FIELDS = {
     "run_id", "case_id", "provider", "status", "steps", "tool_calls", "max_steps",
     "max_tool_calls", "usage", "usage_complete", "model_seconds", "report", "observed",
     "pending_model_request", "max_seconds", "elapsed_seconds", "deadline_seconds",
     "hypotheses", "tool_seconds", "transport_attempts",
     "policy", "max_total_tokens", "max_context_chars", "source", "definition_hash",
-    "report_audit",
+    "report_audit", "agents", "phase", "partial",
 }
 
 
@@ -122,9 +122,15 @@ class _WorkbenchServer(ThreadingHTTPServer):
                     return None, "session_limit"
                 provider = self.provider_factory()
                 selected_policy = policy or ("react" if provider.name == "scripted-demo" else "investigator")
-                if provider.name == "scripted-demo" and selected_policy != "react":
+                if provider.name == "scripted-demo" and selected_policy not in {"react", "multi-agent"}:
                     return None, "unsupported_demo_policy"
-                runtime = AgentRuntime(self.cases[case_id], provider, self.store, policy=selected_policy)
+                if selected_policy == "multi-agent":
+                    if max_steps < 12 or max_tool_calls < 16:
+                        return None, "invalid_team_budget"
+                    from .team import TeamRuntime
+                    runtime = TeamRuntime(self.cases[case_id], self.provider_factory, self.store)
+                else:
+                    runtime = AgentRuntime(self.cases[case_id], provider, self.store, policy=selected_policy)
                 # The scripted provider only has an inc001 walkthrough.
                 if runtime.provider.name == "scripted-demo" and case_id != "inc001":
                     return None, "demo_case_unsupported"
@@ -444,14 +450,14 @@ class _Handler(BaseHTTPRequestHandler):
             policy = payload.get("policy")
             if (set(payload) - {"case_id", "max_steps", "max_tool_calls", "policy"}
                     or not isinstance(case_id, str) or len(case_id) > 80
-                    or ("policy" in payload and policy not in ("react", "investigator"))
+                    or ("policy" in payload and policy not in ("react", "investigator", "multi-agent"))
                     or type(max_steps) is not int or not 1 <= max_steps <= 100
                     or type(max_tools) is not int or not 1 <= max_tools <= 200):
                 self._error(400, "invalid_request")
                 return
             run_id, error = self.server.start_run(case_id, max_steps, max_tools, policy)
             if error:
-                status = (400 if error == "unsupported_demo_policy" else 404 if error == "unknown_case"
+                status = (400 if error in {"unsupported_demo_policy", "invalid_team_budget"} else 404 if error == "unknown_case"
                           else 429 if error in {"queue_full", "session_limit"} else 503)
                 self._error(status, error)
             else:
