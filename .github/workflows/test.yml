@@ -5,6 +5,7 @@ permissions:
 jobs:
   unit:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         python: ['3.11', '3.12']
@@ -18,4 +19,8 @@ jobs:
       - run: python -m opslens demo
       - run: python scripts/verify_archives.py
       - run: python -m pip wheel . --no-deps --wheel-dir dist
-      - run: python scripts/verify_release.py --wheel dist/opslens_agent-0.4.0-py3-none-any.whl
+      - name: Verify the wheel for the current package version
+        run: >-
+          python -c "import subprocess, sys, opslens; subprocess.run([sys.executable,
+          'scripts/verify_release.py', '--wheel',
+          f'dist/opslens_agent-{opslens.__version__}-py3-none-any.whl'], check=True)"
